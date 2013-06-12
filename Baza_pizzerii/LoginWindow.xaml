@@ -6,6 +6,17 @@
         <ImageBrush ImageSource="Resources\pizza800x600.png"/>
     </Window.Background>
 
+    <Canvas>
+        <Label Content="Login: " Canvas.Left="227" Canvas.Top="229" Foreground="White" Height="30" Width="61" FontWeight="ExtraBold" FontSize="15"/>
+        <Label Content="Hasło: " Canvas.Left="227" Canvas.Top="264" Foreground="Black"  Height="30" Width="61" FontWeight="ExtraBold" FontSize="15"/>
+        <TextBox Canvas.Left="293" Canvas.Top="230" Height="30" Width="236" FontSize="15" MaxLength="50" />
+        <PasswordBox Canvas.Left="293" Canvas.Top="264" Height="31" Width="236" FontSize="15" MaxLength="25" VerticalAlignment="Center" />
 
+        <Button Content="Zaloguj" Canvas.Top="324" Canvas.Left="483" Click="LogIn_click" />
+
+        <Button Content="Załóż nowe konto" Canvas.Top="51" Canvas.Left="661" Width="112" Click="CreateNewAccount_click" />
+        <Button Content="Wejdź jako gość" Canvas.Top="24" Canvas.Left="661" Width="112" Click="LogInAsGuest_click" />
+
+    </Canvas>
 
 </Window>

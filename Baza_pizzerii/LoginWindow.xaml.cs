@@ -23,5 +23,20 @@ namespace Baza_pizzerii
         {
             InitializeComponent();
         }
+
+        private void LogIn_click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Logowanie..!");
+        }
+
+        private void LogInAsGuest_click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Wchodzimy jako gość..!");
+        }
+
+        private void CreateNewAccount_click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Formularz rejestracji nowego konta..!");
+        }
     }
 }
