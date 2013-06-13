@@ -12,10 +12,10 @@
         <TextBox Canvas.Left="293" Canvas.Top="230" Height="30" Width="236" FontSize="15" MaxLength="50" />
         <PasswordBox Canvas.Left="293" Canvas.Top="264" Height="31" Width="236" FontSize="15" MaxLength="25" VerticalAlignment="Center" />
 
-        <Button Content="Zaloguj" Canvas.Top="324" Canvas.Left="483" Click="LogIn_click" />
+        <Button Content="Zaloguj się" Canvas.Top="324" Canvas.Left="419" Width="110" Click="LogIn_click" />
 
-        <Button Content="Załóż nowe konto" Canvas.Top="51" Canvas.Left="661" Width="112" Click="CreateNewAccount_click" />
-        <Button Content="Wejdź jako gość" Canvas.Top="24" Canvas.Left="661" Width="112" Click="LogInAsGuest_click" />
+        <Button Content="Załóż nowe konto" Canvas.Top="25" Canvas.Left="655" Width="112" Click="CreateNewAccount_click" />
+        <Button Content="Wejdź jako gość" Canvas.Top="324" Canvas.Left="293" Width="110" Click="LogInAsGuest_click" />
 
     </Canvas>
 

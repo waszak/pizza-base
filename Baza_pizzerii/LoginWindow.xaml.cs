@@ -36,7 +36,11 @@ namespace Baza_pizzerii
 
         private void CreateNewAccount_click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Formularz rejestracji nowego konta..!");
+            var registerWindow = new RegisterWindow();
+            registerWindow.Top = this.Top;
+            registerWindow.Left = this.Left;
+            registerWindow.Show();
+            this.Close();
         }
     }
 }
