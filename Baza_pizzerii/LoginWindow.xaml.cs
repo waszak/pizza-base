@@ -58,6 +58,7 @@ namespace Baza_pizzerii
             conn.Open();
             return conn;
         }
+
         private void LogIn_click(object sender, RoutedEventArgs e)
         {
             if ( !IsValidLogin() || !IsValidPassword()){
@@ -94,10 +95,7 @@ namespace Baza_pizzerii
                     return;
                 }
                 conn.Close();
-                var loginWindow = new SearchPizzeriaWindow();
-                loginWindow.Top = this.Top;
-                loginWindow.Left = this.Left;
-                loginWindow.Show();
+                openSearchPizzeriaWindow();
                 this.Close();
             }
             catch (Exception msg)
@@ -107,6 +105,13 @@ namespace Baza_pizzerii
                 #endif
                 MessageBox.Show("Logowanie nie powiodło się!");
             }
+        }
+
+        private void openSearchPizzeriaWindow() {
+            var loginWindow = new SearchPizzeriaWindow();
+            loginWindow.Top = this.Top;
+            loginWindow.Left = this.Left;
+            loginWindow.Show();
         }
 
         private void LogInAsGuest_click(object sender, RoutedEventArgs e)
@@ -121,10 +126,7 @@ namespace Baza_pizzerii
                 App.Current.Properties["Connection"] = conn;
 
                 conn.Close();
-                var loginWindow = new SearchPizzeriaWindow();
-                loginWindow.Top = this.Top;
-                loginWindow.Left = this.Left;
-                loginWindow.Show();
+                openSearchPizzeriaWindow();
                 this.Close();
             }
             catch (Exception msg)
