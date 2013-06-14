@@ -51,6 +51,13 @@ namespace Baza_pizzerii
             return isValid;
         }
 
+        private NpgsqlConnection loginUserToDB(string username, string password) {
+            string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
+                                                   "localhost", "5432", username, password, "bazapizzerii");
+            NpgsqlConnection conn = new NpgsqlConnection(connstring);
+            conn.Open();
+            return conn;
+        }
         private void LogIn_click(object sender, RoutedEventArgs e)
         {
             if ( !IsValidLogin() || !IsValidPassword()){
@@ -59,12 +66,7 @@ namespace Baza_pizzerii
 
             try
             {
-                string connstring = String.Format(  "Server={0};Port={1};User Id={2};Password={3};Database={4};",
-                                                    "localhost", "5432", login_tb.Text, password_pb.Password, "bazapizzerii");
-
-                NpgsqlConnection conn = new NpgsqlConnection(connstring);
-                conn.Open();
-
+                NpgsqlConnection conn = loginUserToDB(login_tb.Text, password_pb.Password);
                 string sql =    "SELECT id_osoba, rola, imie, nazwisko "+
                                 "FROM uzytkownik JOIN osoba USING (id_osoba) "+
                                 "WHERE login = '" + login_tb.Text + "';";
@@ -111,13 +113,8 @@ namespace Baza_pizzerii
         {
             try
             {
-                string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
-                                                    "localhost", "5432", "gosc_konto", "gosc_haslo", "bazapizzerii");
-
-                NpgsqlConnection conn = new NpgsqlConnection(connstring);
-                conn.Open();
-                conn.Close();
-
+                NpgsqlConnection conn = loginUserToDB("gosc_konto", "gosc_haslo"); 
+               
                 //zmienne globalne
                 App.Current.Properties["login"] = "gosc";
                 App.Current.Properties["rola"] = "gosc";
