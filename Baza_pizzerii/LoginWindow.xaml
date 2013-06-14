@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Baza_pizzerii.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Baza pizzerii" Height="600" Width="800" ResizeMode="NoResize" Icon="Resources\pizza.ico">
+        Title="Baza pizzerii - logowanie" Height="600" Width="800" ResizeMode="NoResize" Icon="Resources\pizza.ico">
     <Window.Background>
         <ImageBrush ImageSource="Resources\pizza800x600.png"/>
     </Window.Background>
@@ -9,8 +9,8 @@
     <Canvas>
         <Label Content="Login: " Canvas.Left="227" Canvas.Top="229" Foreground="White" Height="30" Width="61" FontWeight="ExtraBold" FontSize="15"/>
         <Label Content="Hasło: " Canvas.Left="227" Canvas.Top="264" Foreground="Black"  Height="30" Width="61" FontWeight="ExtraBold" FontSize="15"/>
-        <TextBox Canvas.Left="293" Canvas.Top="230" Height="30" Width="236" FontSize="15" MaxLength="50" />
-        <PasswordBox Canvas.Left="293" Canvas.Top="264" Height="31" Width="236" FontSize="15" MaxLength="25" VerticalAlignment="Center" />
+        <TextBox Name="login_tb" Canvas.Left="293" Canvas.Top="230" Height="30" Width="236" FontSize="15" MaxLength="50" />
+        <PasswordBox Name="password_pb" Canvas.Left="293" Canvas.Top="264" Height="31" Width="236" FontSize="15" MaxLength="25" VerticalAlignment="Center" />
 
         <Button Content="Zaloguj się" Canvas.Top="324" Canvas.Left="419" Width="110" Click="LogIn_click" />
 

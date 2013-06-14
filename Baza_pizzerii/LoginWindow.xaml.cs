@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Npgsql;
 
 namespace Baza_pizzerii
 {
@@ -26,12 +29,110 @@ namespace Baza_pizzerii
 
         private void LogIn_click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Logowanie..!");
+            if (login_tb.Text.Length == 0)
+            {
+                MessageBox.Show("Pole login nie może być puste!");
+                return;
+            }
+
+            if (password_pb.Password.Length == 0)
+            {
+                MessageBox.Show("Pole hasło nie może być puste!");
+                return;
+            }
+
+            if (!Regex.IsMatch(login_tb.Text, @"^[a-zA-Z][a-zA-Z0-9]*$"))
+            {
+                MessageBox.Show("Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą.");
+                return;
+            }
+
+            if (!Regex.IsMatch(password_pb.Password, @"^[a-zA-Z0-9]*$"))
+            {
+                MessageBox.Show("Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.");
+                return;
+            }
+
+            try
+            {
+                string connstring = String.Format(  "Server={0};Port={1};User Id={2};Password={3};Database={4};",
+                                                    "localhost", "5432", login_tb.Text, password_pb.Password, "bazapizzerii");
+
+                NpgsqlConnection conn = new NpgsqlConnection(connstring);
+                conn.Open();
+
+                string sql =    "SELECT id_osoba, rola, imie, nazwisko "+
+                                "FROM uzytkownik JOIN osoba USING (id_osoba) "+
+                                "WHERE login = '" + login_tb.Text + "';";
+
+                NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+                NpgsqlDataReader dr = command.ExecuteReader();
+                if (dr.Read() == false)
+                {
+                    MessageBox.Show("Wystąpił błąd podczas logowania!");
+                    conn.Close();
+                    return;
+                }
+                //przechoujemy potrzebne informacje w zmiennych globalnych całej aplikacji
+                App.Current.Properties["login"] = login_tb.Text;
+                App.Current.Properties["id_osoba"] = dr[0];
+                App.Current.Properties["rola"] = dr[1];
+                App.Current.Properties["imie"] = dr[2];
+                App.Current.Properties["nazwisko"] = dr[3];
+                App.Current.Properties["Connection"] = conn;
+
+                if (App.Current.Properties["rola"].ToString() == "wlasciciel_pizzerii")
+                {
+                    MessageBox.Show("Twoje konto jest typu wlasciciel_pizzerii. " +
+                                    "\nNie zaimplementowano jeszcze dalszej funkcjonalności dla właściciela ;)");
+                    return;
+                }
+                conn.Close();
+                var loginWindow = new SearchPizzeriaWindow();
+                loginWindow.Top = this.Top;
+                loginWindow.Left = this.Left;
+                loginWindow.Show();
+                this.Close();
+            }
+            catch (Exception msg)
+            {
+                #if DEBUG
+                    MessageBox.Show(msg.ToString());
+                #endif
+                MessageBox.Show("Logowanie nie powiodło się!");
+            }
         }
 
         private void LogInAsGuest_click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Wchodzimy jako gość..!");
+            try
+            {
+                string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
+                                                    "localhost", "5432", "gosc_konto", "gosc_haslo", "bazapizzerii");
+
+                NpgsqlConnection conn = new NpgsqlConnection(connstring);
+                conn.Open();
+                conn.Close();
+
+                //zmienne globalne
+                App.Current.Properties["login"] = "gosc";
+                App.Current.Properties["rola"] = "gosc";
+                App.Current.Properties["Connection"] = conn;
+
+                conn.Close();
+                var loginWindow = new SearchPizzeriaWindow();
+                loginWindow.Top = this.Top;
+                loginWindow.Left = this.Left;
+                loginWindow.Show();
+                this.Close();
+            }
+            catch (Exception msg)
+            {
+                #if DEBUG
+                    MessageBox.Show(msg.ToString());
+                #endif
+                MessageBox.Show("Wystąpił błąd podczas łączenia się z bazą danych!");
+            }
         }
 
         private void CreateNewAccount_click(object sender, RoutedEventArgs e)
