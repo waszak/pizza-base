@@ -27,29 +27,33 @@ namespace Baza_pizzerii
             InitializeComponent();
         }
 
+        private bool IsValidLogin() {
+            bool isValid = false;
+            if (login_tb.Text.Length == 0) {
+                MessageBox.Show("Pole login nie może być puste!");
+            } else if (!Regex.IsMatch(login_tb.Text, @"^[a-zA-Z][a-zA-Z0-9]*$")) {
+                MessageBox.Show("Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą.");
+            } else {
+                isValid = true;
+            }
+            return isValid;
+        }
+
+        private bool IsValidPassword() {
+            bool isValid = false;
+            if (password_pb.Password.Length == 0) {
+                MessageBox.Show("Pole hasło nie może być puste!");
+            } else if (!Regex.IsMatch(password_pb.Password, @"^[a-zA-Z0-9]*$")) {
+                MessageBox.Show("Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.");
+            } else {
+                isValid = true;
+            }
+            return isValid;
+        }
+
         private void LogIn_click(object sender, RoutedEventArgs e)
         {
-            if (login_tb.Text.Length == 0)
-            {
-                MessageBox.Show("Pole login nie może być puste!");
-                return;
-            }
-
-            if (password_pb.Password.Length == 0)
-            {
-                MessageBox.Show("Pole hasło nie może być puste!");
-                return;
-            }
-
-            if (!Regex.IsMatch(login_tb.Text, @"^[a-zA-Z][a-zA-Z0-9]*$"))
-            {
-                MessageBox.Show("Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą.");
-                return;
-            }
-
-            if (!Regex.IsMatch(password_pb.Password, @"^[a-zA-Z0-9]*$"))
-            {
-                MessageBox.Show("Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.");
+            if ( !IsValidLogin() || !IsValidPassword()){
                 return;
             }
 
