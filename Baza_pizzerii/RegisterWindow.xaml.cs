@@ -121,58 +121,66 @@ namespace Baza_pizzerii
                 MessageBox.Show("Adres jest niepoprawny!\nPowinien składać się wyłącznie z liter, cyfr i znaków - / . ,");
                 return;
             }
-            
+
+            string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
+                                    "localhost", "5432", "rejestrator", "ndijo1s81a4", "bazapizzerii");
+            NpgsqlConnection pgConnection = new NpgsqlConnection(connstring);
+
             try
             {
-                string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
-                                                    "localhost", "5432", "rejestrator", "ndijo1s81a4", "bazapizzerii");
-
-                NpgsqlConnection conn = new NpgsqlConnection(connstring);
-                conn.Open();
-
-                //sprawdzamy, czy dany login nie jest zarezerwowany
-                string login = "'" + login_tb.Text + "'";
-                string sql = "SELECT * FROM uzytkownik WHERE login = " + login + ";";
+                pgConnection.Open();
                
-                NpgsqlCommand command = new NpgsqlCommand(sql, conn);
-                if (command.ExecuteReader().Read() == true)
+                NpgsqlCommand pgCommand = new NpgsqlCommand("SELECT * FROM uzytkownik WHERE login = @login;", pgConnection);
+                pgCommand.Parameters.AddWithValue("@login", login_tb.Text);
+                if (pgCommand.ExecuteReader().Read() == true)
                 {
                     MessageBox.Show("Użytkownik o podanym loginie już istnieje!");
-                    conn.Close();
+                    pgConnection.Close();
                     return;
                 }
 
                 //tworzymy nową, unikalną wartość identyfikatora dla użytkownika
-                sql = "SELECT nextval('osoba_id_osoba_seq')";
-                command = new NpgsqlCommand(sql, conn);
-                NpgsqlDataReader dr = command.ExecuteReader();
+                pgCommand = new NpgsqlCommand("SELECT nextval('osoba_id_osoba_seq')", pgConnection);
+                int id = Convert.ToInt32(pgCommand.ExecuteScalar());
 
-                if (dr.Read() == false)
-                    throw new Exception("Nie mozna pobrać max id z bazy danych!");
+                using (NpgsqlTransaction pgTransaction = (NpgsqlTransaction)pgConnection.BeginTransaction())
+                {
+                    try
+                    {
+            
+                        pgCommand = new NpgsqlCommand(  "INSERT INTO osoba VALUES(@id, @imie, @nazwisko, @adres, @email, @telefon);" +
+                                                        "INSERT INTO uzytkownik VALUES (@id, @uzytkownik, @rola);",
+                                                        pgConnection, pgTransaction);
 
-                // przygotowanie danych do wprowadzenia do bazy
-                string id = dr[0].ToString(); 
-                dr.Close();
-                string rola = rola_cb.Text == "Klient" ? "'klient'" : "'wlasciciel_pizzerii'";
-                string imie = "'" + imie_tb.Text + "'";
-                string nazwisko = "'" + nazwisko_tb.Text + "'";
-                string email = "'" + email_tb.Text + "'";
-                string telefon = telefon_tb.Text.Length > 0 ? "'" + telefon_tb.Text + "'" : "NULL";
-                string adres = Adres_tb.Text.Length > 0 ? "'" + Adres_tb.Text + "'" : "NULL";
+                        // przygotowanie danych do wprowadzenia do bazy
+                        pgCommand.Parameters.AddWithValue("@rola", rola_cb.Text == "Klient" ? "klient" : "wlasciciel_pizzerii");
+                        pgCommand.Parameters.AddWithValue("@id", id);
+                        pgCommand.Parameters.AddWithValue("@uzytkownik", login_tb.Text);
+                        pgCommand.Parameters.AddWithValue("@imie", imie_tb.Text);
+                        pgCommand.Parameters.AddWithValue("@nazwisko", nazwisko_tb.Text);
+                        pgCommand.Parameters.AddWithValue("@email", email_tb.Text);
+                        pgCommand.Parameters.AddWithValue("@telefon", telefon_tb.Text.Length > 0 ? telefon_tb.Text : null);
+                        pgCommand.Parameters.AddWithValue("@adres", Adres_tb.Text.Length > 0 ? Adres_tb.Text : null);
 
-                sql =   "INSERT INTO osoba VALUES (" + id + "," + imie + "," + nazwisko + "," + adres + "," + email + "," + telefon +");" +
-                        "INSERT INTO uzytkownik VALUES (" + id + "," + login + "," + rola +");";
+                        pgCommand.ExecuteNonQuery();
 
-                command = new NpgsqlCommand(sql, conn);
-                if (command.ExecuteNonQuery() != 2)
-                    throw new Exception("Insert error!");
+                        pgCommand = new NpgsqlCommand("CREATE USER " + login_tb.Text +
+                                " IN GROUP " + (rola_cb.Text == "Klient" ? "klient" : "wlasciciel_pizzerii") +
+                                " PASSWORD '" + password1_pb.Password + "';", 
+                                pgConnection, pgTransaction);
+                        pgCommand.ExecuteNonQuery();
 
-                rola = rola_cb.Text == "Klient" ? "klient" : "wlasciciel_pizzerii";
-                sql = "CREATE USER " + login_tb.Text + " IN GROUP " + rola + " PASSWORD '" + password1_pb.Password + "';";
-               
-                command = new NpgsqlCommand(sql, conn);
-                command.ExecuteNonQuery();
-                conn.Close();
+                        pgTransaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        //Transaction rolled back to the original state
+                        pgTransaction.Rollback();
+                        throw new Exception("Transaction rolled back! " + ex.ToString());
+                    }
+                }
+
+                pgConnection.Close();
 
                 MessageBox.Show("Zarejestrowałeś się w bazie pizzerii.\nMożesz się teraz zalogować.");
                 var loginWindow = new LoginWindow();
@@ -183,6 +191,8 @@ namespace Baza_pizzerii
             }
             catch (Exception msg)
             {
+                pgConnection.Close();
+
                 #if DEBUG
                 MessageBox.Show(msg.ToString());
                 #endif
