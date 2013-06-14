@@ -7,9 +7,9 @@
     </Window.Background>
 
     <Canvas>
-        <TextBox Height="43" Name="textBox1" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
+        <TextBox Name="textBoxAdress" Height="43" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
 
-        <ComboBox Height="43" HorizontalAlignment="Left" Name="comboBox1" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="321" Canvas.Top="32">
+        <ComboBox Name="comboBoxCities" Height="43" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="321" Canvas.Top="32">
             <ComboBoxItem IsSelected="True">
                 Wrocław
             </ComboBoxItem>
@@ -18,7 +18,7 @@
             </ComboBoxItem>
         </ComboBox>
 
-        <Button Height="43" Name="button1" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
+        <Button Name="buttonSearcg" Height="43" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
                 BorderThickness="0" Canvas.Left="571" Canvas.Top="32" >
             <Grid>
                 <Image Source="Resources/search.png"/>
@@ -38,12 +38,25 @@
             </MenuItem>
             <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
         </Menu>
-        
-        <!-- Cool tu powinno być coś na podobe combobox z checkboxami -->
-        <ComboBox Text="Wybierz składniki" Height="43" HorizontalAlignment="Left" Name="comboBoxSkladniki_Copy" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="446" Canvas.Top="32">
-            <ComboBoxItem Content="szynka"/>
-            <ComboBoxItem Content="pieczarki"/>
-        </ComboBox>
+
+        <Menu Height="43" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Canvas.Left="446" Canvas.Top="32">
+            <MenuItem  Name="menuIngredients" Width="120" Height="43" >
+                <MenuItem.Header>
+                    <TextBlock Text="Składniki" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </MenuItem.Header>
+
+                <MenuItem.ItemTemplate >
+                    <DataTemplate >
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsSelected}"
+                           Width="20" />
+                            <TextBlock Text="{Binding Name}"
+                           Width="60" />
+                        </StackPanel>
+                    </DataTemplate>
+                </MenuItem.ItemTemplate>
+            </MenuItem>
+        </Menu>
 
     </Canvas>
 
