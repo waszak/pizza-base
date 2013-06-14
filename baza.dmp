@@ -1,0 +1,559 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -              SKRYPT GENERUJ¥CY BAZÊ DANYCH (POSTGRESQL)               - - -
+-- - -              BAZY DANYCH 2013                                         - - -
+-- - -                                                                       - - -
+-- - -              PROWADZ¥CY GRUPÊ:  WITOLD CHARATONIK (ŒRODA)             - - -
+-- - -                                                                       - - -
+-- - -              WALDEMAR BIRA          241603                            - - -
+-- - -              PRZEMYS£AW TURCZYÑSKI  241762                            - - -
+-- - -              KRZYSZTOF WASZAK       241765                            - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DROP DOMAIN IF EXISTS rodzajPr CASCADE;
+
+DROP TRIGGER IF EXISTS oblicz_ocene_opinii_ins ON ocena_opinii;
+DROP FUNCTION IF EXISTS oblicz_ocene_opinii_f_ins();
+
+DROP TRIGGER IF EXISTS oblicz_ocene_opinii_del ON ocena_opinii;
+DROP FUNCTION IF EXISTS oblicz_ocene_opinii_f_del();
+
+DROP TRIGGER IF EXISTS oblicz_ocene_opinii_upd ON ocena_opinii;
+DROP FUNCTION IF EXISTS oblicz_ocene_opinii_f_upd();
+
+DROP TRIGGER IF EXISTS oblicz_ocene_pizzyPizzerii_ins ON opinia;
+DROP FUNCTION IF EXISTS oblicz_ocene_pizzyPizzerii_f_ins();
+
+DROP TRIGGER IF EXISTS oblicz_ocene_pizzyPizzerii_del ON opinia;
+DROP FUNCTION IF EXISTS oblicz_ocene_pizzyPizzerii_f_del();
+
+DROP TRIGGER IF EXISTS oblicz_ocene_pizzyPizzerii_upd ON opinia;
+DROP FUNCTION IF EXISTS oblicz_ocene_pizzyPizzerii_f_upd();
+
+DROP TRIGGER IF EXISTS inicjuj_ocene_pizzerii ON pizzeria;
+DROP FUNCTION IF EXISTS inicjuj_ocene_pizzerii_f();
+
+DROP TRIGGER IF EXISTS inicjuj_ocene_pizzy ON oferta_pizza;
+DROP FUNCTION IF EXISTS inicjuj_ocene_pizzy_f();
+
+DROP TABLE IF EXISTS uzytkownik CASCADE;
+DROP TABLE IF EXISTS osoba CASCADE;
+DROP TABLE IF EXISTS pizzeria CASCADE;
+DROP TABLE IF EXISTS pizza CASCADE;
+DROP TABLE IF EXISTS skladnik CASCADE;
+DROP TABLE IF EXISTS sklad CASCADE;
+DROP TABLE IF EXISTS oferta_pizza CASCADE;
+DROP TABLE IF EXISTS inny_produkt CASCADE;
+DROP TABLE IF EXISTS oferta_inny_produkt CASCADE;
+DROP TABLE IF EXISTS opinia CASCADE;
+DROP TABLE IF EXISTS ocena_opinii CASCADE;
+DROP TABLE IF EXISTS laczna_ocena CASCADE;
+
+DROP ROLE IF EXISTS gosc;
+DROP ROLE IF EXISTS klient;
+DROP ROLE IF EXISTS wlasciciel_pizzerii;
+DROP USER IF EXISTS rejestrator;
+DROP USER IF EXISTS gosc_konto;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -                    Definicja bazy  danych                             - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+CREATE TABLE osoba 
+(	
+    id_osoba SERIAL PRIMARY KEY,
+    imie text NOT NULL CHECK (length(imie) <= 25),
+	nazwisko text NOT NULL CHECK (length(nazwisko) <= 25),
+    adres text CHECK(length(adres) <= 100),
+	mail text CHECK (length(mail) <= 50),
+	telefon text CHECK (length(telefon) <= 20)
+);
+
+CREATE TABLE uzytkownik 
+(	
+    id_osoba integer NOT NULL REFERENCES osoba (id_osoba) ON DELETE CASCADE ON UPDATE CASCADE,
+	login text NOT NULL CHECK (length(login) <= 25),
+	rola text NOT NULL CHECK (rola IN ('klient', 'wlasciciel_pizzerii', 'gosc', 'pomocnicze'))	
+);
+
+CREATE TABLE pizzeria 
+(
+    id_pizzeria SERIAL PRIMARY KEY,
+    nazwa text NOT NULL CHECK (length(nazwa) <= 100),
+    miasto text NOT NULL CHECK(length(miasto) <= 50),
+	ulica text NOT NULL CHECK(length(ulica) <= 100),
+	telefon text CHECK (length(telefon) <= 20),
+	www text CHECK (length(www) <= 50),
+    wlasciciel integer NOT NULL REFERENCES osoba (id_osoba) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+CREATE TABLE pizza 
+(
+    id_pizza SERIAL PRIMARY KEY,
+    nazwa text NOT NULL CHECK (length(nazwa) <= 100)
+);
+
+
+CREATE TABLE skladnik
+(
+    id_skladnik SERIAL PRIMARY KEY,
+	nazwa text NOT NULL CHECK (length(nazwa) <= 100)
+);
+
+
+CREATE TABLE sklad 
+(
+    id_pizza integer NOT NULL REFERENCES pizza (id_pizza) ON DELETE CASCADE ON UPDATE CASCADE,
+    id_skladnik integer NOT NULL REFERENCES skladnik (id_skladnik) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+CREATE TABLE oferta_pizza 
+(
+	id_oferta_pizza SERIAL PRIMARY KEY,
+    id_pizza integer NOT NULL REFERENCES pizza (id_pizza) ON DELETE RESTRICT ON UPDATE CASCADE,
+    id_pizzeria integer NOT NULL REFERENCES pizzeria (id_pizzeria) ON DELETE CASCADE ON UPDATE CASCADE,
+	cena real CHECK (cena >= 0),
+	wielkosc integer CHECK (wielkosc <= 100 and wielkosc > 0)
+);
+
+CREATE DOMAIN rodzajPr AS TEXT
+CHECK (VALUE IN (
+		'alkohol',
+		'napoj',
+		'danie',
+		'dodatek'));
+		
+CREATE TABLE inny_produkt 
+(
+    id_produkt SERIAL PRIMARY KEY,
+    nazwa text NOT NULL CHECK (length(nazwa) <= 100),
+	rodzaj rodzajPr NOT NULL
+);
+
+
+CREATE TABLE oferta_inny_produkt 
+(
+    id_produkt integer NOT NULL REFERENCES inny_produkt (id_produkt) ON DELETE RESTRICT ON UPDATE CASCADE,
+    id_pizzeria integer NOT NULL REFERENCES pizzeria (id_pizzeria) ON DELETE CASCADE ON UPDATE CASCADE,
+	cena real CHECK (cena >= 0)
+);
+
+
+CREATE TABLE opinia 
+(
+    id_opinia SERIAL PRIMARY KEY,
+    id_pizzeria integer NOT NULL REFERENCES pizzeria (id_pizzeria) ON DELETE CASCADE ON UPDATE CASCADE,
+	id_pizza integer REFERENCES pizza (id_pizza) ON DELETE CASCADE ON UPDATE CASCADE,
+    wystawil integer REFERENCES osoba (id_osoba) ON DELETE SET NULL ON UPDATE CASCADE,
+	komentarz text NOT NULL CHECK (length(komentarz) <= 1000),
+	ocena integer NOT NULL CHECK (ocena in (1, 2, 3, 4, 5)),
+	wartosc_oceny real NOT NULL DEFAULT 0,
+	liczba_ocen integer CHECK (liczba_ocen >= 0) NOT NULL DEFAULT 0
+);
+
+
+CREATE TABLE ocena_opinii
+(
+    id_opinia integer NOT NULL REFERENCES opinia (id_opinia) ON DELETE CASCADE ON UPDATE CASCADE,
+    wystawil integer REFERENCES osoba (id_osoba) ON DELETE SET NULL ON UPDATE CASCADE,
+	ocena integer NOT NULL CHECK (ocena in (1, 2, 3, 4, 5)),
+	CONSTRAINT ocena_opinii_unique UNIQUE (id_opinia, wystawil)
+);
+
+
+CREATE TABLE laczna_ocena
+(
+    id_pizzeria integer NOT NULL REFERENCES pizzeria (id_pizzeria) ON DELETE CASCADE ON UPDATE CASCADE,
+	id_pizza integer REFERENCES pizza (id_pizza) ON DELETE CASCADE ON UPDATE CASCADE,
+	ocena real NOT NULL CHECK (ocena >= 0 AND ocena <= 5) DEFAULT 0,
+	liczba_ocen integer NOT NULL CHECK (liczba_ocen >= 0) DEFAULT 0,
+	CONSTRAINT laczna_ocena_unique UNIQUE (id_pizzeria, id_pizza)
+);
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -        Wyzwalacze obliczaj¹ce œredni¹ wartoœæ opinii                  - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ 
+-- after insert
+
+CREATE FUNCTION oblicz_ocene_opinii_f_ins() RETURNS TRIGGER AS $X$
+DECLARE
+	idOpinia integer := NEW.id_opinia;
+	srednia real;
+	
+BEGIN
+	SELECT avg(ocena) INTO srednia FROM ocena_opinii
+	WHERE id_opinia = idOpinia;
+	
+	IF srednia IS NULL THEN srednia := 0;
+	END IF;
+		
+	UPDATE opinia SET 
+		wartosc_oceny = srednia,
+		liczba_ocen = liczba_ocen + 1
+	WHERE id_opinia = idOpinia;
+
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER oblicz_ocene_opinii_ins AFTER INSERT ON ocena_opinii FOR EACH ROW
+EXECUTE PROCEDURE oblicz_ocene_opinii_f_ins();
+
+-- after delete
+
+CREATE FUNCTION oblicz_ocene_opinii_f_del() RETURNS TRIGGER AS $X$
+DECLARE
+	idOpinia integer := OLD.id_opinia;
+	srednia real;
+	
+BEGIN
+	SELECT avg(ocena) INTO srednia FROM ocena_opinii
+	WHERE id_opinia = idOpinia;
+	
+	IF srednia IS NULL THEN srednia := 0;
+	END IF;
+	
+	UPDATE opinia SET 
+		wartosc_oceny = srednia,
+		liczba_ocen = liczba_ocen - 1
+	WHERE id_opinia = idOpinia;
+
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER oblicz_ocene_opinii_del AFTER DELETE ON ocena_opinii FOR EACH ROW
+EXECUTE PROCEDURE oblicz_ocene_opinii_f_del();
+
+-- after update
+
+CREATE FUNCTION oblicz_ocene_opinii_f_upd() RETURNS TRIGGER AS $X$
+DECLARE
+	idOpiniaOLD integer := OLD.id_opinia;
+	idOpiniaNEW integer := NEW.id_opinia;
+
+	srednia real;
+	
+BEGIN
+
+	IF  idOpiniaOLD <> idOpiniaNEW 
+	THEN
+		SELECT avg(ocena) INTO srednia FROM ocena_opinii
+		WHERE id_opinia = idOpiniaOLD;
+		
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE opinia SET 
+			wartosc_oceny = srednia,
+			liczba_ocen = liczba_ocen - 1
+		WHERE id_opinia = idOpiniaOLD;
+		
+		SELECT avg(ocena) INTO srednia FROM ocena_opinii
+		WHERE id_opinia = idOpiniaNEW;
+		
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE opinia SET 
+			wartosc_oceny = srednia,
+			liczba_ocen = liczba_ocen + 1
+		WHERE id_opinia = idOpiniaNEW;	
+	ELSE
+		SELECT avg(ocena) INTO srednia FROM ocena_opinii
+		WHERE id_opinia = idOpiniaNEW;
+		
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE opinia SET 
+			wartosc_oceny = srednia
+		WHERE id_opinia = idOpiniaNEW;	
+	END IF;
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER oblicz_ocene_opinii_upd AFTER UPDATE ON ocena_opinii FOR EACH ROW
+EXECUTE PROCEDURE oblicz_ocene_opinii_f_upd();
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -        Wyzwalacze obliczaj¹ce œredni¹ ocenê pizzy/pizzerii            - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ 
+-- after insert
+
+CREATE FUNCTION oblicz_ocene_pizzyPizzerii_f_ins() RETURNS TRIGGER AS $X$
+DECLARE
+	srednia real;
+	
+	idPizza integer := NEW.id_pizza;
+	idPizzeria integer := NEW.id_pizzeria;
+	
+BEGIN
+	-- jezeli idPizza IS NOT NULL, to ocena dotyczy konkretnej pizzy w lokalu
+	IF idPizza IS NOT NULL 
+	THEN
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeria = id_pizzeria AND idPizza = id_pizza;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen + 1
+		WHERE idPizzeria = id_pizzeria AND idPizza = id_pizza;
+	
+	-- jezeli idPizza IS NULL, to ocena dotyczy calego lokalu (nie konkretnej pizzy w tym lokalu)
+	ELSE
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeria = id_pizzeria AND id_pizza IS NULL;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen + 1
+		WHERE idPizzeria = id_pizzeria AND id_pizza IS NULL;
+	END IF;
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER oblicz_ocene_pizzyPizzerii_ins AFTER INSERT ON opinia FOR EACH ROW
+EXECUTE PROCEDURE oblicz_ocene_pizzyPizzerii_f_ins();
+
+-- after delete
+
+CREATE FUNCTION oblicz_ocene_pizzyPizzerii_f_del() RETURNS TRIGGER AS $X$
+DECLARE
+	srednia real;
+	
+	idPizza integer := OLD.id_pizza;
+	idPizzeria integer := OLD.id_pizzeria;
+	
+BEGIN
+	-- jezeli idPizza IS NOT NULL, to ocena dotyczy konkretnej pizzy w lokalu
+	IF idPizza IS NOT NULL 
+	THEN
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeria = id_pizzeria AND idPizza = id_pizza;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen - 1
+		WHERE idPizzeria = id_pizzeria AND idPizza = id_pizza;
+	
+	-- jezeli idPizza IS NULL, to ocena dotyczy calego lokalu (nie konkretnej pizzy w tym lokalu)
+	ELSE
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeria = id_pizzeria AND id_pizza IS NULL;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen - 1
+		WHERE idPizzeria = id_pizzeria AND id_pizza IS NULL;
+	END IF;
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER oblicz_ocene_pizzyPizzerii_del AFTER DELETE ON opinia FOR EACH ROW
+EXECUTE PROCEDURE oblicz_ocene_pizzyPizzerii_f_del();
+
+-- after update
+
+CREATE FUNCTION oblicz_ocene_pizzyPizzerii_f_upd() RETURNS TRIGGER AS $X$
+DECLARE
+	srednia real;
+	
+	idPizzaOLD integer := OLD.id_pizza;
+	idPizzeriaOLD integer := OLD.id_pizzeria;
+	idPizzaNEW integer := NEW.id_pizza;
+	idPizzeriaNEW integer := NEW.id_pizzeria;
+	
+BEGIN
+	-- jezeli idPizzaOLD IS NOT NULL, to ocena dotyczy konkretnej pizzy w lokalu
+	IF idPizzaOLD IS NOT NULL 
+	THEN
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeriaOLD = id_pizzeria AND idPizzaOLD = id_pizza;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen - 1
+		WHERE idPizzeriaOLD = id_pizzeria AND idPizzaOLD = id_pizza;
+		
+	-- jezeli idPizzaOLD IS NULL, to ocena dotyczy calego lokalu (nie konkretnej pizzy w tym lokalu)
+	ELSE
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeriaOLD = id_pizzeria AND id_pizza IS NULL;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen - 1
+		WHERE idPizzeriaOLD = id_pizzeria AND id_pizza IS NULL;
+	END IF;
+	
+	-- jezeli idPizzaNEW IS NOT NULL, to ocena dotyczy konkretnej pizzy w lokalu
+	IF idPizzaNEW IS NOT NULL 
+	THEN
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeriaNEW = id_pizzeria AND idPizzaNEW = id_pizza;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen + 1
+		WHERE idPizzeriaNEW = id_pizzeria AND idPizzaNEW = id_pizza;
+		
+	-- jezeli idPizzaNEW IS NULL, to ocena dotyczy calego lokalu (nie konkretnej pizzy w tym lokalu)
+	ELSE
+		SELECT avg(ocena) INTO srednia FROM opinia
+		WHERE idPizzeriaNEW = id_pizzeria AND id_pizza IS NULL;
+	
+		IF srednia IS NULL THEN srednia := 0;
+		END IF;
+		
+		UPDATE laczna_ocena SET 
+			ocena = srednia,
+			liczba_ocen = liczba_ocen + 1
+		WHERE idPizzeriaNEW = id_pizzeria AND id_pizza IS NULL;
+	END IF;
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER oblicz_ocene_pizzyPizzerii_upd AFTER UPDATE ON opinia FOR EACH ROW
+EXECUTE PROCEDURE oblicz_ocene_pizzyPizzerii_f_upd();
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -   Wyzwalacz inicjujacy ocene nowo dodanej pizzerii do bazy            - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CREATE FUNCTION inicjuj_ocene_pizzerii_f() RETURNS TRIGGER AS $X$
+BEGIN
+	INSERT INTO laczna_ocena VALUES (NEW.id_pizzeria, NULL, 0, 0);
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER inicjuj_ocene_pizzerii AFTER INSERT ON pizzeria FOR EACH ROW
+EXECUTE PROCEDURE inicjuj_ocene_pizzerii_f();
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -   Wyzwalacz inicjujacy ocene nowo dodanej pizzy do oferty pizzerii    - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CREATE FUNCTION inicjuj_ocene_pizzy_f() RETURNS TRIGGER AS $X$
+BEGIN
+	INSERT INTO laczna_ocena VALUES (NEW.id_pizzeria, NEW.id_pizza, 0, 0);
+	RETURN NULL;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE TRIGGER inicjuj_ocene_pizzy AFTER INSERT ON oferta_pizza FOR EACH ROW
+EXECUTE PROCEDURE inicjuj_ocene_pizzy_f();
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -                       DEFINICJA UZYTKOWNIKOW                          - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CREATE ROLE gosc;
+GRANT SELECT ON oferta_pizza TO gosc;
+GRANT SELECT ON pizza TO gosc;
+GRANT SELECT ON sklad TO gosc;
+GRANT SELECT ON skladnik TO gosc;
+GRANT SELECT ON pizzeria TO gosc;
+GRANT SELECT ON oferta_inny_produkt TO gosc;
+GRANT SELECT ON inny_produkt TO gosc;
+GRANT SELECT ON opinia TO gosc;
+GRANT SELECT ON laczna_ocena TO gosc; 
+
+
+CREATE ROLE klient;
+GRANT SELECT, UPDATE ON osoba TO klient;
+GRANT SELECT ON uzytkownik TO klient;
+GRANT SELECT ON oferta_pizza TO klient;
+GRANT SELECT ON pizza TO klient;
+GRANT SELECT ON sklad TO klient;
+GRANT SELECT ON skladnik TO klient;
+GRANT SELECT ON pizzeria TO klient;
+GRANT SELECT ON oferta_inny_produkt TO klient;
+GRANT SELECT ON inny_produkt TO klient;
+GRANT ALL PRIVILEGES ON opinia TO klient;
+GRANT ALL PRIVILEGES ON ocena_opinii TO klient;
+GRANT ALL PRIVILEGES ON laczna_ocena TO klient; 
+
+
+CREATE ROLE wlasciciel_pizzerii;
+GRANT SELECT, UPDATE ON osoba TO wlasciciel_pizzerii;
+GRANT SELECT ON uzytkownik TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON oferta_pizza TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON pizza TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON sklad TO wlasciciel_pizzerii;
+GRANT SELECT ON skladnik TO wlasciciel_pizzerii;
+GRANT SELECT, UPDATE ON pizzeria TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON oferta_inny_produkt TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON inny_produkt TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON opinia TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON ocena_opinii TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON laczna_ocena TO wlasciciel_pizzerii; 
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - -                                                                       - - -
+-- - -          REJESTRACJA PODSTAWOWYCH, NIEZBEDNYCH UZYTKOWNIKOW           - - -
+-- - -                                                                       - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CREATE USER rejestrator PASSWORD 'ndijo1s81a4' CREATEUSER;
+INSERT INTO osoba VALUES (1,'rejestrator', 'rejestrator', NULL, NULL, NULL);
+INSERT INTO uzytkownik VALUES (1, 'rejestrator', 'pomocnicze');
+
+CREATE USER gosc_konto IN GROUP gosc PASSWORD 'gosc_haslo';
+INSERT INTO osoba VALUES (2,'gosc_konto', 'gosc_konto', NULL, NULL, NULL);
+INSERT INTO uzytkownik VALUES (2, 'gosc_konto', 'gosc');
+INSERT INTO uzytkownik VALUES (2, 'gosc', 'gosc');
+
+INSERT INTO osoba VALUES (3,'postgres', 'postgres', NULL, NULL, NULL);
+INSERT INTO uzytkownik VALUES (3, 'postgres', 'pomocnicze');
+
+SELECT setval('osoba_id_osoba_seq', 10);
