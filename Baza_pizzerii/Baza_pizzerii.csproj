@@ -79,6 +79,9 @@
     <Compile Include="SearchPizzaWindow.xaml.cs">
       <DependentUpon>SearchPizzaWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchPizzeriaPage.xaml.cs">
+      <DependentUpon>SearchPizzeriaPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SearchPizzeriaWindow.xaml.cs">
       <DependentUpon>SearchPizzeriaWindow.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SearchPizzaWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchPizzeriaPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

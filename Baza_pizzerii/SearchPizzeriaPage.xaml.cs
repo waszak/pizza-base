@@ -11,31 +11,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Collections.ObjectModel;
 
 namespace Baza_pizzerii {
     /// <summary>
-    /// Interaction logic for SearchPizzaPage.xaml
+    /// Interaction logic for SearchPizzeriaPage.xaml
     /// </summary>
-     class Ingredient {
-        public Ingredient() {
-        }
-
-        public string Name { get; set; }
-    }
-    public partial class SearchPizzaPage : Page {
-        public SearchPizzaPage() {
+    public partial class SearchPizzeriaPage : Page {
+        public SearchPizzeriaPage() {
             InitializeComponent();
-            ObservableCollection<Ingredient> ingredients = new ObservableCollection<Ingredient>
-                                               {
-                                                   new Ingredient {Name = "szynka"},
-                                                   new Ingredient {Name = "pieczarki"},
-                                                   new Ingredient {Name = "gyros"},
-                                                   new Ingredient {Name = "papryka"}
-                                               };
-            this.menuIngredients.ItemsSource = ingredients;
         }
-
 
         private void myAccount_Click(object sender, RoutedEventArgs e) {
             if (App.Current.Properties["rola"].ToString() == "gosc") {
@@ -59,6 +43,7 @@ namespace Baza_pizzerii {
         }
 
         private void searchPizza_Click(object sender, RoutedEventArgs e) {
+            var loginWindow = new SearchPizzaWindow();
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new SearchPizzaPage());
         }
