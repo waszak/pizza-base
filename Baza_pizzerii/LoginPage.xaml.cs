@@ -124,11 +124,7 @@ namespace Baza_pizzerii {
         }
 
         private void CreateNewAccount_click(object sender, RoutedEventArgs e) {
-          /*  var registerWindow = new RegisterWindow();
-            registerWindow.Top = this.Top;
-            registerWindow.Left = this.Left;
-            registerWindow.Show();
-            this.Close();*/
+            this.NavigationService.Navigate(new RegisterPage());
         }
     }
 }
