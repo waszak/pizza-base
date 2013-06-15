@@ -9,17 +9,22 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 
 namespace Baza_pizzerii {
     /// <summary>
-    /// Interaction logic for SearchPizzaWindow.xaml
+    /// Interaction logic for SearchPizzaPage.xaml
     /// </summary>
+     class Ingredient {
+        public Ingredient() {
+        }
 
-    
-    public partial class SearchPizzaWindow : Window {
-        public SearchPizzaWindow() {
+        public string Name { get; set; }
+    }
+    public partial class SearchPizzaPage : Page {
+        public SearchPizzaPage() {
             InitializeComponent();
             ObservableCollection<Ingredient> ingredients = new ObservableCollection<Ingredient>
                                                {
@@ -30,6 +35,7 @@ namespace Baza_pizzerii {
                                                };
             this.menuIngredients.ItemsSource = ingredients;
         }
+
 
         private void myAccount_Click(object sender, RoutedEventArgs e) {
             if (App.Current.Properties["rola"].ToString() == "gosc") {
@@ -48,27 +54,27 @@ namespace Baza_pizzerii {
         }
 
         private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
-            var loginWindow = new SearchPizzeriaWindow();
+            /*var loginWindow = new SearchPizzeriaWindow();
             loginWindow.Top = this.Top;
             loginWindow.Left = this.Left;
             loginWindow.Show();
-            this.Close();
+            this.Close();*/
         }
 
         private void searchPizza_Click(object sender, RoutedEventArgs e) {
-            var loginWindow = new SearchPizzaWindow();
+            /*var loginWindow = new SearchPizzaWindow();
             loginWindow.Top = this.Top;
             loginWindow.Left = this.Left;
             loginWindow.Show();
-            this.Close();
+            this.Close();*/
         }
 
         private void logout_Click(object sender, RoutedEventArgs e) {
-            var loginWindow = new LoginWindow();
+           /* var loginWindow = new LoginWindow();
             loginWindow.Top = this.Top;
             loginWindow.Left = this.Left;
             loginWindow.Show();
-            this.Close();
+            this.Close();*/
         }
     }
 }

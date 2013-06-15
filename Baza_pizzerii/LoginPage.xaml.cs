@@ -87,7 +87,6 @@ namespace Baza_pizzerii {
                 }
                 conn.Close();
                 openSearchPizzeriaWindow();
-               // this.Close();
             } catch (Exception msg) {
                 #if DEBUG
                     MessageBox.Show(msg.ToString());
@@ -97,10 +96,7 @@ namespace Baza_pizzerii {
         }
 
         private void openSearchPizzeriaWindow() {
-            var loginWindow = new SearchPizzeriaWindow();
-           /* loginWindow.Top = this.Top;
-            loginWindow.Left = this.Left;*/
-            loginWindow.Show();
+            this.NavigationService.Navigate(new SearchPizzaPage());
         }
 
         private void LogInAsGuest_click(object sender, RoutedEventArgs e) {
@@ -114,7 +110,6 @@ namespace Baza_pizzerii {
 
                 conn.Close();
                 openSearchPizzeriaWindow();
-                //this.Close();
             } catch (Exception msg) {
                 #if DEBUG
                     MessageBox.Show(msg.ToString());
