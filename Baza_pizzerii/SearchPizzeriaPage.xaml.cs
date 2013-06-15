@@ -43,7 +43,6 @@ namespace Baza_pizzerii {
         }
 
         private void searchPizza_Click(object sender, RoutedEventArgs e) {
-            var loginWindow = new SearchPizzaWindow();
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new SearchPizzaPage());
         }
