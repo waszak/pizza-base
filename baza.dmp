@@ -544,7 +544,10 @@ GRANT ALL PRIVILEGES ON laczna_ocena TO wlasciciel_pizzerii;
 -- - -                                                                       - - -
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-CREATE USER rejestrator PASSWORD 'ndijo1s81a4' CREATEUSER;
+CREATE USER rejestrator PASSWORD 'ndijo1s81a4' CREATEROLE;
+GRANT INSERT, SELECT ON uzytkownik, osoba TO rejestrator;
+GRANT SELECT, USAGE	 ON osoba_id_osoba_seq TO rejestrator;
+
 INSERT INTO osoba VALUES (1,'rejestrator', 'rejestrator', NULL, NULL, NULL);
 INSERT INTO uzytkownik VALUES (1, 'rejestrator', 'pomocnicze');
 
