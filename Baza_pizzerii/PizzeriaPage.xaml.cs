@@ -22,6 +22,35 @@ namespace Baza_pizzerii {
         public PizzeriaPage(string id) {
             InitializeComponent();
             this.pizzeria_id = id;
+            IntializeLabels();
+        }
+        private void IntializeLabels(){
+            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
+            string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
+                                "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
+                                "WHERE id_pizzeria = @id;";
+            conn.Open();
+            Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+            query.Parameters.AddWithValue("@id", this.pizzeria_id);
+            query.Prepare();
+            Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+            if (reader.Read()) {
+                string name = reader.GetString(1);
+                string adress = reader.GetString(2)+" " + reader.GetString(3);
+                string phone = reader.GetString(4);
+                string www = reader.GetString(5);
+                float ocena = reader.GetFloat(6);
+                int liczba_ocen = reader.GetInt32(7);
+                this.name_label.Content = name;
+                this.adress_label.Content = adress;
+                this.phone_label.Content = phone;
+                this.www_label.Content = www;
+                this.grade_label.Content = String.Format("{0:F2} z {1}", ocena, liczba_ocen);
+                
+               
+            }
+
+            conn.Close();
         }
         private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
