@@ -1,0 +1,47 @@
+﻿<Page x:Class="Baza_pizzerii.PizzeriaPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+	Title="Pizzeria">
+    <Page.Background>
+        <ImageBrush ImageSource="Resources\pizza800x600.png"/>
+    </Page.Background>
+    <Canvas>
+        <Menu Width="240">
+            <MenuItem Header="Szukaj" Width="80">
+                <MenuItem Header="Pizzerii" Click="searchPizzeriaPage_Click"/>
+                <MenuItem Header="Pizzy" Click="searchPizzaPage_Click"/>
+            </MenuItem>
+            <MenuItem Header="Moje konto" Width="80">
+                <MenuItem Header="Wyświetl" Click="myAccount_Click"/>
+                <MenuItem Header="Edytuj"/>
+            </MenuItem>
+            <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
+        </Menu>
+        <Label Canvas.Left="12" Canvas.Top="27" Content="Nazwa" Height="28" Name="label1" Foreground="White" FontSize="16" />
+        <Label Canvas.Left="12" Canvas.Top="61" Content="Adres" FontSize="16" Foreground="White" Height="28" Name="label2" />
+        <Label Canvas.Left="12" Canvas.Top="95" Content="Telefon" FontSize="16" Foreground="White" Height="28" Name="label3" />
+        <Label Canvas.Left="12" Canvas.Top="129" Content="Ocena"  FontSize="16" Foreground="White" Height="28" Name="label4" />
+        <TabControl Canvas.Left="12" Canvas.Top="191" Height="397" Name="tabControl1" Width="776">
+            <TabItem Header="Pizze" Name="tabItem1">
+                <Grid />
+            </TabItem>
+            <TabItem Header="Inne dania" Name="tabItem2">
+                <Grid />
+            </TabItem>
+            <TabItem Header="Napoje" Name="tabItem3">
+                <Grid />
+            </TabItem>
+            <TabItem Header="Opinie" Name="tabItem4">
+                <Grid />
+            </TabItem>
+        </TabControl>
+        <Label Canvas.Left="75" Canvas.Top="27" Content="Nazwa" FontSize="16" Foreground="White" Height="28" Name="name_label" />
+        <Label Canvas.Left="75" Canvas.Top="61" Content="Nazwa" FontSize="16" Foreground="White" Height="28" Name="adress_label" />
+        <Label Canvas.Left="75" Canvas.Top="95" Content="Nazwa" FontSize="16" Foreground="White" Height="28" Name="phone_label" />
+        <Label Canvas.Left="75" Canvas.Top="129" Content="Nazwa" FontSize="16" Foreground="White" Height="28" Name="grade_label" />
+    </Canvas>
+</Page>
