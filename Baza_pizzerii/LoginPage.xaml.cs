@@ -63,9 +63,12 @@ namespace Baza_pizzerii {
                 NpgsqlConnection conn = loginUserToDB(login_tb.Text, password_pb.Password);
                 string sql = "SELECT id_osoba, rola, imie, nazwisko " +
                                 "FROM uzytkownik JOIN osoba USING (id_osoba) " +
-                                "WHERE login = '" + login_tb.Text + "';";
+                                "WHERE login = @login;";
 
-                NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+                NpgsqlCommand command = new NpgsqlCommand(null, conn);
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@login", login_tb.Text);
+                command.Prepare();
                 NpgsqlDataReader dr = command.ExecuteReader();
                 if (dr.Read() == false) {
                     MessageBox.Show("Wystąpił błąd podczas logowania!");
