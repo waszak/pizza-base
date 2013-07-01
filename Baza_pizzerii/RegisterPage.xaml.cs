@@ -12,7 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Npgsql;
-using System.Text.RegularExpressions;
 
 namespace Baza_pizzerii {
     /// <summary>
@@ -34,28 +33,17 @@ namespace Baza_pizzerii {
                 return;
             }
 
-            if (login_tb.Text.Length == 0) {
-                MessageBox.Show("Pole login nie może być puste!");
+            string return_msg;
+            
+            if (! Validate.Login(login_tb.Text, out return_msg))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
-
-            if (!Regex.IsMatch(login_tb.Text, @"^[a-zA-Z][a-zA-Z0-9]*$")) {
-                MessageBox.Show("Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą.");
-                return;
-            }
-
-            if (password1_pb.Password.Length < 6) {
-                MessageBox.Show("Hasło musi składać się przynajmniej z 6 znaków!");
-                return;
-            }
-
-            if (password1_pb.Password != password2_pb.Password) {
-                MessageBox.Show("Hasła są różne!");
-                return;
-            }
-
-            if (!Regex.IsMatch(password1_pb.Password, @"^[a-zA-Z0-9]*$")) {
-                MessageBox.Show("Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.");
+            
+            if (! Validate.Passwords(password1_pb.Password, password2_pb.Password, out return_msg))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
@@ -64,8 +52,9 @@ namespace Baza_pizzerii {
                 return;
             }
 
-            if (!Regex.IsMatch(imie_tb.Text, @"^[a-zA-Z]*$")) {
-                MessageBox.Show("Imię zawiera niepoprawne znaki! \nPoprawne imię składa się wyłącznie z liter.");
+            if (! Validate.OnlyLetters(imie_tb.Text, "Imię", out return_msg))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
@@ -74,38 +63,32 @@ namespace Baza_pizzerii {
                 return;
             }
 
-            if (!Regex.IsMatch(nazwisko_tb.Text, @"^[a-zA-Z]*$")) {
-                MessageBox.Show("Nazwisko zawiera niepoprawne znaki!\nPoprawne nazwisko składa się wyłącznie z liter.");
+            if (! Validate.OnlyLetters(nazwisko_tb.Text, "Nazwisko", out return_msg))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
-            if (email_tb.Text.Length == 0) {
-                MessageBox.Show("Pole e-mail nie może być puste!");
+            if (! Validate.Email(email_tb.Text, out return_msg))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
-            if (!Regex.IsMatch(email_tb.Text, @"^[a-zA-Z0-9._]+@[a-zA-Z0-9._]+$")) {
-                MessageBox.Show("E-mail jest niepoprawny!");
+            if (telefon_tb.Text.Length > 0 && (!Validate.PhoneNumber(telefon_tb.Text, out return_msg)))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
-            if (!Regex.IsMatch(telefon_tb.Text, @"^[0-9-]*$")) {
-                MessageBox.Show("Numer telefonu ma niepoprawny format! \nPowinien składać się wyłącznie z cyfr i '-'");
+            if (Adres_tb.Text.Length > 0 && (!Validate.Address(Adres_tb.Text, out return_msg)))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
-            if (!Regex.IsMatch(Adres_tb.Text, @"^[a-zA-Z0-9.,-/ ]*$")) {
-                MessageBox.Show("Adres jest niepoprawny!\nPowinien składać się wyłącznie z liter, cyfr i znaków - / . ,");
-                return;
-            }
-
-            string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
-                                    "localhost", "5432", "rejestrator", "ndijo1s81a4", "bazapizzerii");
-            NpgsqlConnection pgConnection = new NpgsqlConnection(connstring);
-
+            NpgsqlConnection pgConnection = DB.loginUserToDB("rejestrator", "ndijo1s81a4");
             try {
-                pgConnection.Open();
-
                 NpgsqlCommand pgCommand = new NpgsqlCommand("SELECT * FROM uzytkownik WHERE login = @login;", pgConnection);
                 pgCommand.Parameters.AddWithValue("@login", login_tb.Text);
                 if (pgCommand.ExecuteReader().Read() == true) {

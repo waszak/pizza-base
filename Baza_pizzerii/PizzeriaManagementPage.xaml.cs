@@ -12,15 +12,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Baza_pizzerii {
+namespace Baza_pizzerii
+{
     /// <summary>
-    /// Interaction logic for SearchPizzeriaPage.xaml
+    /// Interaction logic for PizzeriaManagementPage.xaml
     /// </summary>
-    public partial class SearchPizzeriaPage : Page {
-        public SearchPizzeriaPage() {
+    public partial class PizzeriaManagementPage : Page
+    {
+        public PizzeriaManagementPage()
+        {
             InitializeComponent();
         }
-
+        
         private void myAccount_Click(object sender, RoutedEventArgs e)
         {
             if (App.Current.Properties["rola"].ToString() == "gosc")
@@ -32,17 +35,8 @@ namespace Baza_pizzerii {
             userAccountWindow.Show();
         }
 
-        private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new SearchPizzeriaPage());
-        }
-
-        private void searchPizza_Click(object sender, RoutedEventArgs e) {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new SearchPizzaPage());
-        }
-
-        private void logout_Click(object sender, RoutedEventArgs e) {
+        private void logout_Click(object sender, RoutedEventArgs e)
+        {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new LoginPage());
         }

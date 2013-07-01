@@ -22,46 +22,25 @@ namespace Baza_pizzerii {
         public LoginPage() {
             InitializeComponent();
         }
-        private bool IsValidLogin() {
-            bool isValid = false;
-            if (login_tb.Text.Length == 0) {
-                MessageBox.Show("Pole login nie może być puste!");
-            } else if (!Regex.IsMatch(login_tb.Text, @"^[a-zA-Z][a-zA-Z0-9]*$")) {
-                MessageBox.Show("Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą.");
-            } else {
-                isValid = true;
-            }
-            return isValid;
-        }
-
-        private bool IsValidPassword() {
-            bool isValid = false;
-            if (password_pb.Password.Length == 0) {
-                MessageBox.Show("Pole hasło nie może być puste!");
-            } else if (!Regex.IsMatch(password_pb.Password, @"^[a-zA-Z0-9]*$")) {
-                MessageBox.Show("Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.");
-            } else {
-                isValid = true;
-            }
-            return isValid;
-        }
-
-        private NpgsqlConnection loginUserToDB(string username, string password) {
-            string connstring = String.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};",
-                                                   "localhost", "5432", username, password, "bazapizzerii");
-            NpgsqlConnection conn = new NpgsqlConnection(connstring);
-            conn.Open();
-            return conn;
-        }
 
         private void LogIn_click(object sender, RoutedEventArgs e) {
-            if (!IsValidLogin() || !IsValidPassword()) {
+
+            string return_msg;
+            if (!Validate.Login(login_tb.Text, out return_msg))
+            {
+                MessageBox.Show(return_msg);
+                return;
+            }
+
+            if (!Validate.Password(password_pb.Password, out return_msg))
+            {
+                MessageBox.Show(return_msg);
                 return;
             }
 
             try {
-                NpgsqlConnection conn = loginUserToDB(login_tb.Text, password_pb.Password);
-                string sql = "SELECT id_osoba, rola, imie, nazwisko " +
+                NpgsqlConnection conn = DB.loginUserToDB(login_tb.Text, password_pb.Password);
+                string sql = "SELECT id_osoba, rola " +
                                 "FROM uzytkownik JOIN osoba USING (id_osoba) " +
                                 "WHERE login = '" + login_tb.Text + "';";
 
@@ -74,19 +53,17 @@ namespace Baza_pizzerii {
                 }
                 //przechoujemy potrzebne informacje w zmiennych globalnych całej aplikacji
                 App.Current.Properties["login"] = login_tb.Text;
+                App.Current.Properties["password"] = password_pb.Password;
                 App.Current.Properties["id_osoba"] = dr[0];
                 App.Current.Properties["rola"] = dr[1];
-                App.Current.Properties["imie"] = dr[2];
-                App.Current.Properties["nazwisko"] = dr[3];
-                App.Current.Properties["Connection"] = conn;
 
-                if (App.Current.Properties["rola"].ToString() == "wlasciciel_pizzerii") {
-                    MessageBox.Show("Twoje konto jest typu wlasciciel_pizzerii. " +
-                                    "\nNie zaimplementowano jeszcze dalszej funkcjonalności dla właściciela ;)");
-                    return;
-                }
                 conn.Close();
-                openSearchPizzeriaWindow();
+                if (App.Current.Properties["rola"].ToString() == "wlasciciel_pizzerii") {
+                    openPizzeriaManagementWindow();
+                }
+                else {              
+                    openSearchPizzeriaWindow();
+                }
             } catch (Exception msg) {
                 #if DEBUG
                     MessageBox.Show(msg.ToString());
@@ -99,14 +76,18 @@ namespace Baza_pizzerii {
             this.NavigationService.Navigate(new SearchPizzaPage());
         }
 
+        private void openPizzeriaManagementWindow() {
+            this.NavigationService.Navigate(new PizzeriaManagementPage());
+        }
+
+
         private void LogInAsGuest_click(object sender, RoutedEventArgs e) {
             try {
-                NpgsqlConnection conn = loginUserToDB("gosc_konto", "gosc_haslo");
+                NpgsqlConnection conn = DB.loginUserToDB("gosc_konto", "gosc_haslo");
 
                 //zmienne globalne
                 App.Current.Properties["login"] = "gosc";
                 App.Current.Properties["rola"] = "gosc";
-                App.Current.Properties["Connection"] = conn;
 
                 conn.Close();
                 openSearchPizzeriaWindow();
@@ -120,6 +101,13 @@ namespace Baza_pizzerii {
 
         private void CreateNewAccount_click(object sender, RoutedEventArgs e) {
             this.NavigationService.Navigate(new RegisterPage());
+        }
+
+
+        private void logout_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new LoginPage());
         }
     }
 }
