@@ -65,7 +65,7 @@ namespace Baza_pizzerii {
         }
 
         private void IntializeAlkohol() {
-            IntializeProduct(this.Extra_ListView, "alkohol");
+            IntializeProduct(this.Alkohol_ListView, "alkohol");
         }
         private void IntializeExtra() {
             IntializeProduct(this.Extra_ListView, "dodatek");
