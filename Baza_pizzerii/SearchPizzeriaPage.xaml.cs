@@ -20,6 +20,13 @@ namespace Baza_pizzerii {
     public partial class SearchPizzeriaPage : Page {
         public SearchPizzeriaPage() {
             InitializeComponent();
+            GridView gridview = (GridView)((ListView)this.Pizzeria_listView).View;
+            GridViewColumn column = gridview.Columns[0];
+            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
+                if (e.PropertyName == "ActualWidth") {
+                    column.Width = 0;
+                }
+            };
         }
 
         private void myAccount_Click(object sender, RoutedEventArgs e)
@@ -48,30 +55,47 @@ namespace Baza_pizzerii {
             this.NavigationService.Navigate(new LoginPage());
         }
         private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
+            this.Pizzeria_listView.Items.Clear();
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
-                string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www " +
-                                    "FROM pizzeria " +
+                string sql = "SELECT id_pizzeria, nazwa, miasto" +
+                                    " FROM pizzeria " +
                                     "WHERE miasto like @miasto;";
 
-                adapter = new Npgsql.NpgsqlDataAdapter(sql, conn);
-                adapter.SelectCommand.Parameters.AddWithValue("@miasto", City_comboBox.Text);
-                dataTable = new DataTable();
-                adapter.Fill(dataTable);
-                Pizzeria_dataGrid.ItemsSource = dataTable.DefaultView;
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@miasto", City_comboBox.Text);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    Pizzeria p = new Pizzeria();
+                    p.Id = reader.GetInt32(0).ToString();
+                    p.name = reader.GetString(1);
+                    p.city = reader.GetString(2);
+                    this.Pizzeria_listView.Items.Add(p);
+                }
             }
         }
-        private void selectPizzeria(object sender, RoutedEventArgs e) {
-            DataRowView row = (DataRowView)Pizzeria_dataGrid.SelectedItems[0];
-            int x = ((int)((DataRowView)(Pizzeria_dataGrid.SelectedItems[0])).Row[0]);
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new PizzeriaPage(((int)row.Row[0]).ToString()));
+
+        private void selectPizzeria(object sender, MouseButtonEventArgs e) {
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as Pizzeria;
+            if (item != null) {
+                this.NavigationService.RemoveBackEntry();
+                this.NavigationService.Navigate(new PizzeriaPage(item.Id));
+            }
         }
-       
-        Npgsql.NpgsqlDataAdapter adapter = null;
-        DataTable dataTable = null;
-
-
-
+        class Pizzeria {
+            public string Id {
+                get;
+                set;
+            }
+            public string name {
+                get;
+                set;
+            }
+            public string city {
+                get;
+                set;
+            }
+        }
     }
 
 }

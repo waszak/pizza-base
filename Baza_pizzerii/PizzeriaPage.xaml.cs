@@ -39,7 +39,7 @@ namespace Baza_pizzerii {
 
         }
 
-        private void otherProductQuery(string rodzaj, Npgsql.NpgsqlConnection conn, out Npgsql.NpgsqlCommand  query) {
+        private void otherProductQuery(string rodzaj, Npgsql.NpgsqlConnection conn, out Npgsql.NpgsqlCommand query) {
             string sql = "SELECT inny_produkt.nazwa, cena" +
                                    " FROM pizzeria join oferta_inny_produkt using(id_pizzeria) join inny_produkt using(id_produkt)" +
                                    " WHERE id_pizzeria = @id and inny_produkt.rodzaj = @rodzaj" +
@@ -63,7 +63,7 @@ namespace Baza_pizzerii {
                 }
             }
         }
-        
+
         private void IntializeAlkohol() {
             IntializeProduct(this.Extra_ListView, "alkohol");
         }
@@ -112,7 +112,7 @@ namespace Baza_pizzerii {
                 while (reader.Read()) {
                     string name = reader.GetString(1);
                     string adress = reader.GetString(2) + " " + reader.GetString(3);
-                    string phone = (reader.IsDBNull(4)?"":reader.GetString(4));
+                    string phone = (reader.IsDBNull(4) ? "" : reader.GetString(4));
                     string www = (reader.IsDBNull(5) ? "" : reader.GetString(5));
                     float ocena = reader.GetFloat(6);
                     int liczba_ocen = reader.GetInt32(7);
@@ -175,8 +175,8 @@ namespace Baza_pizzerii {
             set;
         }
     }
-    
-    public class Pizza:Product {
+
+    public class Pizza : Product {
         public Pizza(string id_pizza, string pizza_name) {
             this.id_pizza = id_pizza;
             this.name = pizza_name;
@@ -185,7 +185,7 @@ namespace Baza_pizzerii {
             get;
             set;
         }
-        
+
         public string pizza_ingredients {
             get;
             set;
@@ -195,7 +195,7 @@ namespace Baza_pizzerii {
             set;
         }
 
- 
+
     }
 
 }
