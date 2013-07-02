@@ -61,6 +61,17 @@ namespace Baza_pizzerii
             return true;
         }
 
+        public static bool OnlyNumeric(string text, string fieldname, out string msg)
+        {
+            if (!Regex.IsMatch(text, @"^[0-9]*$"))
+            {
+                msg = fieldname + " zawiera niepoprawne znaki! \nDozwolone są wyłącznie cyfry.";
+                return false;
+            }
+            msg = "";
+            return true;
+        }
+
         public static bool AlphaNumericSpace(string text, string fieldname, out string msg)
         {
             if (!Regex.IsMatch(text, @"^[a-zA-Z0-9 ęóąśżźćńĘÓĄŚŻŹŃĘłŁ]*$"))
@@ -114,6 +125,17 @@ namespace Baza_pizzerii
                 return false;
             }
 
+            msg = "";
+            return true;
+        }
+
+        public static bool RealNumber(string text, out string msg)
+        {
+            if (!Regex.IsMatch(text, @"^[0-9]+[.][0-9]+$") && !Regex.IsMatch(text, @"^[0-9]+$"))
+            {
+                msg = "Liczba jest niepoprawna!";
+                return false;
+            }
             msg = "";
             return true;
         }

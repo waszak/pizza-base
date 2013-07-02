@@ -73,7 +73,7 @@ namespace Baza_pizzerii
 
             NpgsqlCommand command = new NpgsqlCommand(sql, conn);
             command.ExecuteNonQuery();
-
+            conn.Close();
             Refresh();
 
         }
