@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
+using System.ComponentModel;
 
 namespace Baza_pizzerii {
     /// <summary>
@@ -20,6 +21,7 @@ namespace Baza_pizzerii {
     public partial class SearchPizzeriaPage : Page {
         public SearchPizzeriaPage() {
             InitializeComponent();
+            IntializeCity();
             GridView gridview = (GridView)((ListView)this.Pizzeria_listView).View;
             GridViewColumn column = gridview.Columns[0];
             ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
@@ -27,8 +29,25 @@ namespace Baza_pizzerii {
                     column.Width = 0;
                 }
             };
+            
         }
 
+        private void IntializeCity() {
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+                string sql = "SELECT DISTINCT miasto" +
+                                    " FROM pizzeria order by 1;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    City p = new City();
+                    p.name = reader.GetString(0);
+                    this.City_comboBox.Items.Add(p);
+                }
+               
+            }
+
+        }
         private void myAccount_Click(object sender, RoutedEventArgs e)
         {
             if (App.Current.Properties["rola"].ToString() == "gosc")
@@ -59,10 +78,13 @@ namespace Baza_pizzerii {
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
                 string sql = "SELECT id_pizzeria, nazwa, miasto" +
                                     " FROM pizzeria " +
-                                    "WHERE miasto like @miasto;";
+                                    "WHERE (miasto like @miasto and (ulica like @ulicaFormat1 or ulica like @ulicaFormat2))"+
+                                        "or miasto like @miasto";
 
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
                 query.Parameters.AddWithValue("@miasto", City_comboBox.Text);
+                query.Parameters.AddWithValue("@ulicaFormat1", pizzeriaAddress_TextBox.Text);
+                query.Parameters.AddWithValue("@ulicaFormat2", City_comboBox.Text);
                 query.Prepare();
                 Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
                 while (reader.Read()) {
@@ -82,6 +104,14 @@ namespace Baza_pizzerii {
                 this.NavigationService.Navigate(new PizzeriaPage(item.Id));
             }
         }
+        
+         class City {
+
+             public string name {
+                 get;
+                 set;
+             }
+        }
         class Pizzeria {
             public string Id {
                 get;
@@ -96,6 +126,9 @@ namespace Baza_pizzerii {
                 set;
             }
         }
+
+
+     
     }
 
 }
