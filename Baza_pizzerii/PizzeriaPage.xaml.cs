@@ -24,15 +24,24 @@ namespace Baza_pizzerii {
             this.pizzeria_id = id;
             IntializeLabels();
             IntializePizzas();
+            //Pierwsza kolumna jest ukryta.
+            GridView gridview = (GridView)((ListView)this.Pizza_ListView).View;
+            GridViewColumn column = gridview.Columns[0];
+            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
+                if (e.PropertyName == "ActualWidth") {
+                    column.Width = 0;
+                }
+            };
+
         }
         private void IntializePizzas() {
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
 
-                string sql = "SELECT id_pizza, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', ') " +
-                                    "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)"+
+                string sql = "SELECT id_pizza, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', '), oferta_pizza.wielkosc, oferta_pizza.cena " +
+                                    "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" +
                                           "join sklad using(id_pizza) join skladnik using(id_skladnik)" +
-                                    " WHERE id_pizzeria = @id"+
-                                    " GROUP BY id_pizza, pizza.nazwa ORDER BY pizza.nazwa;";
+                                    " WHERE id_pizzeria = @id" +
+                                    " GROUP BY id_pizza, pizza.nazwa, oferta_pizza.wielkosc, oferta_pizza.cena ORDER BY pizza.nazwa,oferta_pizza.wielkosc;";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
                 query.Parameters.AddWithValue("@id", this.pizzeria_id);
                 query.Prepare();
@@ -40,14 +49,15 @@ namespace Baza_pizzerii {
                 while (reader.Read()) {
                     Pizza pizza = new Pizza(reader.GetInt32(0).ToString(), reader.GetString(1));
                     pizza.pizza_ingredients = reader.GetString(2);
-                    pizza.pizza_price_per_size = "10";
+                    pizza.pizza_size = (!reader.IsDBNull(3) ? reader.GetInt32(3) : (int?)null);
+                    pizza.pizza_price = (!reader.IsDBNull(4) ? reader.GetFloat(4) : (float?)null);
                     ListViewItem item = new ListViewItem();
                     this.Pizza_ListView.Items.Add(pizza);
                 }
             }
         }
 
-        private void IntializeLabels(){
+        private void IntializeLabels() {
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
                 string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
                                     "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
@@ -56,7 +66,7 @@ namespace Baza_pizzerii {
                 query.Parameters.AddWithValue("@id", this.pizzeria_id);
                 query.Prepare();
                 Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-                if (reader.Read()) {
+                while (reader.Read()) {
                     string name = reader.GetString(1);
                     string adress = reader.GetString(2) + " " + reader.GetString(3);
                     string phone = reader.GetString(4);
@@ -106,24 +116,28 @@ namespace Baza_pizzerii {
     }
 
     public class Pizza {
-        public Pizza(string id_pizza, string pizza_name){
+        public Pizza(string id_pizza, string pizza_name) {
             this.id_pizza = id_pizza;
             this.pizza_name = pizza_name;
-            this.pizza_price_per_size = "ss";
         }
         public string id_pizza {
             get;
             set;
         }
         public string pizza_name {
-            get; 
+            get;
             set;
         }
         public string pizza_ingredients {
             get;
             set;
         }
-        public string pizza_price_per_size {
+        public int? pizza_size {
+            get;
+            set;
+        }
+
+        public float? pizza_price {
             get;
             set;
         }
