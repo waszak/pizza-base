@@ -165,5 +165,17 @@ namespace Baza_pizzerii
                 MessageBox.Show("Wystąpił błąd podczas aktualizacji danych!");
             }
         }
+
+        private void myAccount_Click(object sender, RoutedEventArgs e)
+        {
+            var userAccountWindow = new UserAccountWindow();
+            userAccountWindow.Show();
+        }
+
+        private void logout_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new LoginPage());
+        }
     }
 }

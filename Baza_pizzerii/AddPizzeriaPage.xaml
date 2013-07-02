@@ -5,13 +5,18 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
-	  WindowTitle="Baza pizzerii - edycja danych pizzerii">
+	  WindowTitle="Baza pizzerii - dodawanie nowej pizzerii">
     <Page.Background>
         <ImageBrush ImageSource="Resources\pizza800x600.png"/>
     </Page.Background>
 
 
     <Canvas>
+
+        <Menu Width="160">
+            <MenuItem Header="Moje konto" Width="80" Click="myAccount_Click" />
+            <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
+        </Menu>
 
         <TextBox Name="Name_tb" Height="25" Canvas.Left="304" TextWrapping="Wrap" Canvas.Top="182" Width="200" MaxLength="100" />
         <Label Height="25" Content="Nazwa*" Canvas.Left="219" Canvas.Top="182" Background="White" Width="80" FontWeight="ExtraBold" />
@@ -29,7 +34,7 @@
         <Label Height="25" Content="Telefon" Canvas.Left="219" Canvas.Top="302" Background="White" Width="80" FontWeight="ExtraBold" />
 
         <Button Name="Accept_bt"  Content="Dodaj" Canvas.Left="429" Canvas.Top="362" Width="75" Click="Accept_Click"/>
-        <Label Content="Edycja danych pizzerii" Canvas.Left="291" Canvas.Top="96" Foreground="White" Height="25" Width="271" FontWeight="ExtraBold"  />
+        <Label Content="Dodawanie nowej pizzerii" Canvas.Left="279" Canvas.Top="96" Foreground="White" Height="25" Width="271" FontWeight="ExtraBold"  />
         <Button Name="Cancel_bt"  Content="Anuluj" Canvas.Left="219" Canvas.Top="362" Width="75" Click="Cancel_Click"/>
     </Canvas>
 </Page>

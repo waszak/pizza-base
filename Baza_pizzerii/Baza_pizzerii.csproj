@@ -65,8 +65,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DB.cs" />
-    <Compile Include="EditMenuPage.xaml.cs">
-      <DependentUpon>EditMenuPage.xaml</DependentUpon>
+    <Compile Include="EditMenuDrinksPage.xaml.cs">
+      <DependentUpon>EditMenuDrinksPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditMenuOtherDishesPage.xaml.cs">
+      <DependentUpon>EditMenuOtherDishesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditMenuPizzaPage.xaml.cs">
+      <DependentUpon>EditMenuPizzaPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditPizzeria.xaml.cs">
       <DependentUpon>EditPizzeria.xaml</DependentUpon>
@@ -137,7 +143,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EditMenuPage.xaml">
+    <Page Include="EditMenuDrinksPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditMenuOtherDishesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditMenuPizzaPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
