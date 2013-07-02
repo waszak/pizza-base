@@ -16,54 +16,116 @@ namespace Baza_pizzerii {
     /// <summary>
     /// Interaction logic for PizzeriaPage.xaml
     /// </summary>
-    
+
     public partial class PizzeriaPage : Page {
         private string pizzeria_id;
         public PizzeriaPage(string id) {
             InitializeComponent();
             this.pizzeria_id = id;
             IntializeLabels();
-           // IntializePizzas();
-        }
-        private void IntializePizzas() {
-            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
-            string sql = "SELECT id_pizza, pizza.nazwa, skladnik.nazwa " +
-                                "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" 
-                                     +"join sklad using(id_pizza) join skladnik using(id_skladnik)"+ 
-                                "WHERE id_pizzeria = @id;";
-            conn.Open();
-            Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
-            query.Parameters.AddWithValue("@id", this.pizzeria_id);
-            query.Prepare();
-            Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-        }
-        private void IntializeLabels(){
-            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
-            string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
-                                "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
-                                "WHERE id_pizzeria = @id;";
-            conn.Open();
-            Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
-            query.Parameters.AddWithValue("@id", this.pizzeria_id);
-            query.Prepare();
-            Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-            if (reader.Read()) {
-                string name = reader.GetString(1);
-                string adress = reader.GetString(2)+" " + reader.GetString(3);
-                string phone = reader.GetString(4);
-                string www = reader.GetString(5);
-                float ocena = reader.GetFloat(6);
-                int liczba_ocen = reader.GetInt32(7);
-                this.name_label.Content = name;
-                this.adress_label.Content = adress;
-                this.phone_label.Content = phone;
-                this.www_label.Content = www;
-                this.grade_label.Content = String.Format("{0:F2} z {1}", ocena, liczba_ocen);
-                
-               
-            }
+            IntializePizzas();
+            IntializeMeals();
+            IntializeDrinks();
+            IntializeExtra();
+            IntializeAlkohol();
+            //Pierwsza kolumna jest ukryta.
+            GridView gridview = (GridView)((ListView)this.Pizza_ListView).View;
+            GridViewColumn column = gridview.Columns[0];
+            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
+                if (e.PropertyName == "ActualWidth") {
+                    column.Width = 0;
+                }
+            };
 
-            conn.Close();
+        }
+
+        private void otherProductQuery(string rodzaj, Npgsql.NpgsqlConnection conn, out Npgsql.NpgsqlCommand query) {
+            string sql = "SELECT inny_produkt.nazwa, cena" +
+                                   " FROM pizzeria join oferta_inny_produkt using(id_pizzeria) join inny_produkt using(id_produkt)" +
+                                   " WHERE id_pizzeria = @id and inny_produkt.rodzaj = @rodzaj" +
+                                   " GROUP BY id_produkt, inny_produkt.nazwa,cena ORDER BY inny_produkt.nazwa;";
+            query = new Npgsql.NpgsqlCommand(sql, conn);
+            query.Parameters.AddWithValue("@id", this.pizzeria_id);
+            query.Parameters.AddWithValue("@rodzaj", rodzaj);
+            query.Prepare();
+        }
+
+        private void IntializeProduct(ListView list, string rodzaj) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+                Npgsql.NpgsqlCommand query;
+                otherProductQuery(rodzaj, conn, out query);
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    Product p = new Product();
+                    p.name = reader.GetString(0);
+                    p.price = (!reader.IsDBNull(1) ? reader.GetFloat(1) : (float?)null);
+                    list.Items.Add(p);
+                }
+            }
+        }
+
+        private void IntializeAlkohol() {
+            IntializeProduct(this.Extra_ListView, "alkohol");
+        }
+        private void IntializeExtra() {
+            IntializeProduct(this.Extra_ListView, "dodatek");
+        }
+        private void IntializeDrinks() {
+            IntializeProduct(this.Drinks_ListView, "napoj");
+        }
+        private void IntializeMeals() {
+            IntializeProduct(this.OtherMeals_ListView, "danie");
+        }
+
+        private void IntializePizzas() {
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+
+                string sql = "SELECT id_pizza, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', '), oferta_pizza.wielkosc, oferta_pizza.cena " +
+                                    "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" +
+                                          "join sklad using(id_pizza) join skladnik using(id_skladnik)" +
+                                    " WHERE id_pizzeria = @id" +
+                                    " GROUP BY id_pizza, pizza.nazwa, oferta_pizza.wielkosc, oferta_pizza.cena ORDER BY pizza.nazwa,oferta_pizza.wielkosc;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@id", this.pizzeria_id);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    Pizza pizza = new Pizza(reader.GetInt32(0).ToString(), reader.GetString(1));
+                    pizza.pizza_ingredients = reader.GetString(2);
+                    pizza.pizza_size = (!reader.IsDBNull(3) ? reader.GetInt32(3) : (int?)null);
+                    pizza.price = (!reader.IsDBNull(4) ? reader.GetFloat(4) : (float?)null);
+                    ListViewItem item = new ListViewItem();
+                    this.Pizza_ListView.Items.Add(pizza);
+                }
+            }
+        }
+
+        private void IntializeLabels() {
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+                string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
+                                    "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
+                                    "WHERE id_pizzeria = @id;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@id", this.pizzeria_id);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    string name = reader.GetString(1);
+                    string adress = reader.GetString(2) + " " + reader.GetString(3);
+                    string phone = (reader.IsDBNull(4) ? "" : reader.GetString(4));
+                    string www = (reader.IsDBNull(5) ? "" : reader.GetString(5));
+                    float ocena = reader.GetFloat(6);
+                    int liczba_ocen = reader.GetInt32(7);
+                    this.name_label.Content = name;
+                    this.adress_label.Content = adress;
+                    this.phone_label.Content = phone;
+                    this.www_label.Content = www;
+                    this.grade_label.Content = String.Format("{0:F2} z {1}", ocena, liczba_ocen);
+
+
+                }
+
+            }
         }
         private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
@@ -94,8 +156,46 @@ namespace Baza_pizzerii {
                 return;
             }
         }
+
+        void Pizza_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as Pizza;
+            if (item != null) {
+                Window x = new Feedback();
+                x.ShowDialog();
+            }
+        }
+    }
+    public class Product {
+        public string name {
+            get;
+            set;
+        }
+        public float? price {
+            get;
+            set;
+        }
     }
 
+    public class Pizza : Product {
+        public Pizza(string id_pizza, string pizza_name) {
+            this.id_pizza = id_pizza;
+            this.name = pizza_name;
+        }
+        public string id_pizza {
+            get;
+            set;
+        }
 
+        public string pizza_ingredients {
+            get;
+            set;
+        }
+        public int? pizza_size {
+            get;
+            set;
+        }
+
+
+    }
 
 }

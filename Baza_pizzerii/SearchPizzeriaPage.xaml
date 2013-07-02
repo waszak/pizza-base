@@ -28,19 +28,16 @@
                 <Image Source="Resources/search.png" />
             </Grid>
         </Button>
-        <DataGrid Height="482" HorizontalAlignment="Left" DataContext="{Binding ViewSearchPizzeria}" Name="Pizzeria_dataGrid" ItemsSource ="{Binding}" SelectedItem ="{Binding Path=SelectedItem,  NotifyOnSourceUpdated=True, Mode=TwoWay}"  IsReadOnly="True" AutoGenerateColumns="False" VerticalAlignment="Top" Width="748" Canvas.Left="10" Canvas.Top="80" >
-            <DataGrid.Columns >
-                <DataGridTextColumn Header="Id" Binding="{Binding Path=id_pizzeria, Mode=TwoWay}" Visibility="Hidden"/>
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Path=nazwa, Mode=TwoWay}" />
-                <DataGridTextColumn Header="Miasto" Binding="{Binding Path=miasto, Mode=TwoWay}" />
-            </DataGrid.Columns>
-            <DataGrid.ItemContainerStyle>
-                <Style TargetType="DataGridRow">
-                    <EventSetter Event="MouseDoubleClick" Handler="selectPizzeria"/>
-                </Style>
-            </DataGrid.ItemContainerStyle>
+        <ListView Height="482" HorizontalAlignment="Left"  Name="Pizzeria_listView" MouseDoubleClick="selectPizzeria"  VerticalAlignment="Top" Width="748" Canvas.Left="10" Canvas.Top="80" >
+            <ListView.View >
+                <GridView >
+                    <GridViewColumn Header="Id" Width="0" DisplayMemberBinding="{Binding Path=Id}"/>
+                    <GridViewColumn Header="Nazwa" DisplayMemberBinding="{Binding Path=name}"/>
+                    <GridViewColumn Header="Miasto" DisplayMemberBinding="{Binding Path=city}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
-        </DataGrid>
         <Menu Width="240">
             <MenuItem Header="Szukaj" Width="80">
                 <MenuItem Header="Pizzerii" Click="searchPizzeriaPage_Click"/>
