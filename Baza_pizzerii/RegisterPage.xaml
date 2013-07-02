@@ -12,32 +12,32 @@
 
     <Canvas>
 
-        <Label Content="Rejestracja nowego użytkownika" Canvas.Left="272" Canvas.Top="35" Foreground="White" Height="30" Width="271" FontWeight="ExtraBold" FontSize="15"/>
-        <Label Content="Imię:&#xD;&#xA;" Canvas.Left="223" Canvas.Top="289" Foreground="Black"  Height="30" FontWeight="ExtraBold" FontSize="15"/>
-        <Label Content="Nazwisko:" Canvas.Left="186" Canvas.Top="332" Foreground="White"  Height="30" FontWeight="ExtraBold" FontSize="15" />
-        <Label Content="E-mail:" Canvas.Left="210" Canvas.Top="376" Foreground="White"  Height="30" FontWeight="ExtraBold" FontSize="15"/>
-        <Label Content="Adres zamieszkania:" Canvas.Left="116" Canvas.Top="465" Foreground="White"  Height="30" FontWeight="ExtraBold" FontSize="15"/>
-        <Label Content="Telefon:" Canvas.Left="201" Canvas.Top="421" Foreground="Black"  Height="30" FontWeight="ExtraBold" FontSize="15"/>
-        <Label Content="Login:" Canvas.Left="214" Canvas.Top="155" Foreground="White"  Height="30"  FontWeight="ExtraBold" FontSize="15" RenderTransformOrigin="0.712,0.62"/>
-        <Label Content="Hasło:" Canvas.Left="214" Canvas.Top="199" Foreground="Black"  Height="30"  FontWeight="ExtraBold" FontSize="15"/>
-        <Label Content="Powtórz hasło:" Canvas.Left="154" Canvas.Top="246" Foreground="White" Height="30"  FontWeight="ExtraBold" FontSize="15"/>
+        <Label Content="Rejestracja nowego użytkownika" Canvas.Left="272" Canvas.Top="35" Foreground="White" Height="25" Width="271" FontWeight="ExtraBold"  />
+        <Label Content="Imię*&#xA;" Canvas.Left="202" Canvas.Top="288" Foreground="Black"  Height="25" FontWeight="ExtraBold"   Background="White" Width="121"/>
+        <Label Content="Nazwisko*" Canvas.Left="202" Canvas.Top="318" Foreground="Black"  Height="25" FontWeight="ExtraBold"   Background="White" Width="121"/>
+        <Label Content="E-mail*" Canvas.Left="202" Canvas.Top="348" Foreground="Black"  Height="25" FontWeight="ExtraBold"   Background="White" Width="121" />
+        <Label Content="Adres zamieszkania" Canvas.Left="202" Canvas.Top="408" Foreground="Black"  Height="25" FontWeight="ExtraBold"   Background="White" Width="121"/>
+        <Label Content="Telefon" Canvas.Left="202" Canvas.Top="378" Foreground="Black"  Height="25" FontWeight="ExtraBold"   Background="White" Width="121"/>
+        <Label Content="Login*&#x9;" Canvas.Left="202" Canvas.Top="176" Foreground="Black"  Height="25"  FontWeight="ExtraBold"   Background="White" RenderTransformOrigin="0.712,0.62" Width="121"/>
+        <Label Content="Hasło*" Canvas.Left="202" Canvas.Top="216" Foreground="Black"  Height="25"  FontWeight="ExtraBold"   Background="White" Width="121" />
+        <Label Content="Powtórz hasło*" Canvas.Left="202" Canvas.Top="246" Foreground="Black" Height="25"  FontWeight="ExtraBold"   Background="White" Width="121"/>
 
-        <ComboBox Name="rola_cb" Text="Wybierz role" IsEditable="True" IsReadOnly="True" Canvas.Left="328" Canvas.Top="111" Width="146" FontSize="15" HorizontalAlignment="Center">
+        <ComboBox Name="rola_cb" Text="Wybierz role" IsEditable="True" IsReadOnly="True" Canvas.Left="328" Canvas.Top="129" Width="146"   HorizontalAlignment="Center">
             <ComboBoxItem Content="Klient"/>
             <ComboBoxItem Content="Właściciel pizzerii"/>
         </ComboBox>
 
-        <TextBox Name="login_tb" Canvas.Left="273" Canvas.Top="155" Height="30" Width="250" FontSize="15" MaxLength="25" />
-        <PasswordBox Name="password1_pb" Canvas.Left="273" Canvas.Top="199" Height="31" Width="250" FontSize="15" MaxLength="25" VerticalAlignment="Center" />
-        <PasswordBox Name="password2_pb" Canvas.Left="273" Canvas.Top="245" Height="31" Width="250" FontSize="15" MaxLength="25" VerticalAlignment="Center" />
-        <TextBox Name="imie_tb" Canvas.Left="273" Canvas.Top="289" Height="30" Width="250" FontSize="15" MaxLength="25" />
-        <TextBox Name="nazwisko_tb" Canvas.Left="273" Canvas.Top="332" Height="30" Width="250" FontSize="15" MaxLength="25" />
-        <TextBox Name="email_tb"  Canvas.Left="273" Canvas.Top="375" Height="30" Width="250" FontSize="15" MaxLength="50" />
-        <TextBox Name="telefon_tb" Canvas.Left="273" Canvas.Top="420" Height="30" Width="250" FontSize="15" MaxLength="20" />
-        <TextBox Name="Adres_tb" Canvas.Left="273" Canvas.Top="462" Height="30" Width="250" FontSize="15" MaxLength="50" />
+        <TextBox Name="login_tb" Canvas.Left="328" Canvas.Top="176" Height="25" Width="250"   MaxLength="25" />
+        <PasswordBox Name="password1_pb" Canvas.Left="328" Canvas.Top="216" Height="25" Width="250"   MaxLength="25" VerticalAlignment="Center" />
+        <PasswordBox Name="password2_pb" Canvas.Left="328" Canvas.Top="246" Height="25" Width="250"   MaxLength="25" VerticalAlignment="Center" />
+        <TextBox Name="imie_tb" Canvas.Left="328" Canvas.Top="288" Height="25" Width="250"   MaxLength="25" />
+        <TextBox Name="nazwisko_tb" Canvas.Left="328" Canvas.Top="318" Height="25" Width="250"   MaxLength="25" />
+        <TextBox Name="email_tb"  Canvas.Left="328" Canvas.Top="348" Height="25" Width="250"   MaxLength="50" />
+        <TextBox Name="telefon_tb" Canvas.Left="328" Canvas.Top="378" Height="25" Width="250"   MaxLength="20" />
+        <TextBox Name="Adres_tb" Canvas.Left="328" Canvas.Top="408" Height="25" Width="250"   MaxLength="50" />
 
-        <Button Content="Zarejestruj się" Canvas.Left="433" Canvas.Top="522" Width="90" Click="Register_Click"/>
-        <Button Content="Anuluj" Canvas.Left="273" Canvas.Top="522" Width="90" Click="Cancel_Click"/>
+        <Button Content="Zarejestruj się" Canvas.Left="488" Canvas.Top="506" Width="90" Click="Register_Click"/>
+        <Button Content="Anuluj" Canvas.Left="328" Canvas.Top="506" Width="90" Click="Cancel_Click"/>
 
     </Canvas>
 </Page>

@@ -36,10 +36,7 @@
                 <MenuItem Header="Pizzerii" Click="searchPizzeriaPage_Click"/>
                 <MenuItem Header="Pizzy" Click="searchPizzaPage_Click"/>
             </MenuItem>
-            <MenuItem Header="Moje konto" Width="80">
-                <MenuItem Header="Wyświetl" Click="myAccount_Click"/>
-                <MenuItem Header="Edytuj"/>
-            </MenuItem>
+            <MenuItem Header="Moje konto" Width="80" Click="myAccount_Click" />
             <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
         </Menu>
 

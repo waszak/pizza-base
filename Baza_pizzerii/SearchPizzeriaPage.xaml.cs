@@ -22,20 +22,15 @@ namespace Baza_pizzerii {
             InitializeComponent();
         }
 
-        private void myAccount_Click(object sender, RoutedEventArgs e) {
-            if (App.Current.Properties["rola"].ToString() == "gosc") {
+        private void myAccount_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.Current.Properties["rola"].ToString() == "gosc")
+            {
                 MessageBox.Show("Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników.");
                 return;
             }
-            if (App.Current.Properties["rola"].ToString() == "klient") {
-                //testowo na razie tylko wyswietlamy wszystko globalne zmienne
-                MessageBox.Show("Login: " + App.Current.Properties["login"].ToString() +
-                                "\nId_osoba: " + App.Current.Properties["id_osoba"].ToString() +
-                                "\nRola: " + App.Current.Properties["rola"].ToString() +
-                                "\nImie: " + App.Current.Properties["imie"].ToString() +
-                                "\nNazwisko: " + App.Current.Properties["nazwisko"].ToString());
-                return;
-            }
+            var userAccountWindow = new UserAccountWindow();
+            userAccountWindow.Show();
         }
 
         private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
