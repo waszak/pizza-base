@@ -15,5 +15,31 @@
             <MenuItem Header="Moje konto" Width="80" Click="myAccount_Click" />
             <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
         </Menu>
+
+        <Grid>
+            <ListView Name="Pizzerie" Margin="64,152,-608,-296"  ItemsSource="{Binding Path=Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600">
+                <ListView.View>
+                    <GridView >
+                        
+                        <GridView.Columns>
+                            <GridViewColumn Header="Id"
+                            DisplayMemberBinding="{Binding Path=id_pizzeria}" />
+                            <GridViewColumn Header="Nazwa"
+                            DisplayMemberBinding="{Binding Path=nazwa}" />
+                            <GridViewColumn Header="Miasto"
+                            DisplayMemberBinding="{Binding Path=miasto}" />
+                            <GridViewColumn Header="Ulica"
+                            DisplayMemberBinding="{Binding Path=ulica}" />
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <Button Content="Dodaj" Canvas.Left="692" Canvas.Top="152" Width="75" Click="AddNewPizzeria_Click" />
+        <Button Content="Usuń" Canvas.Left="692" Canvas.Top="179" Width="75" Click="DeletePizzeria_Click"/>
+        <Button Content="Edytuj" Canvas.Left="692" Canvas.Top="206" Width="75" Click="EditPizzeria_Click" />
+        <Label Content="Lista Twoich pizzerii:" Canvas.Left="288" Canvas.Top="92" Foreground="White" Height="30" Width="206" FontWeight="ExtraBold" FontSize="15"/>
+
+
     </Canvas>
 </Page>
