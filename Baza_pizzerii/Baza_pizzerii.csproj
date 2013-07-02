@@ -57,11 +57,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddPizzeriaPage.xaml.cs">
+      <DependentUpon>AddPizzeriaPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DB.cs" />
+    <Compile Include="EditMenuPage.xaml.cs">
+      <DependentUpon>EditMenuPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditPizzeria.xaml.cs">
+      <DependentUpon>EditPizzeria.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -74,7 +83,6 @@
     <Compile Include="PizzeriaPage.xaml.cs">
       <DependentUpon>PizzeriaPage.xaml</DependentUpon>
     </Compile>
-
     <Compile Include="RegisterPage.xaml.cs">
       <DependentUpon>RegisterPage.xaml</DependentUpon>
     </Compile>
@@ -125,6 +133,18 @@
     <Resource Include="Resources\search.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddPizzeriaPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditMenuPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditPizzeria.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

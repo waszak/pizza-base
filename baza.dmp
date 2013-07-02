@@ -531,12 +531,13 @@ GRANT ALL PRIVILEGES ON oferta_pizza TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON pizza TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON sklad TO wlasciciel_pizzerii;
 GRANT SELECT ON skladnik TO wlasciciel_pizzerii;
-GRANT SELECT, UPDATE ON pizzeria TO wlasciciel_pizzerii;
+GRANT ALL PRIVILEGES ON pizzeria TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON oferta_inny_produkt TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON inny_produkt TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON opinia TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON ocena_opinii TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON laczna_ocena TO wlasciciel_pizzerii; 
+GRANT SELECT, USAGE	 ON pizzeria_id_pizzeria_seq TO wlasciciel_pizzerii;
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- - -                                                                       - - -

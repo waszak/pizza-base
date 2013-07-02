@@ -85,7 +85,6 @@ namespace Baza_pizzerii
         {
             string return_msg;
 
-
             if (!Validate.Passwords(pass1_pb.Password, pass2_pb.Password, out return_msg))
             {
                 MessageBox.Show(return_msg);
@@ -188,7 +187,7 @@ namespace Baza_pizzerii
                 #if DEBUG
                     MessageBox.Show(msg.ToString());
                 #endif
-                MessageBox.Show("Wystąpił błąd podczas rejestracji nowego użytkownika!");
+                MessageBox.Show("Wystąpił błąd podczas aktualizacji danych użytkownika!");
             }
         }
             

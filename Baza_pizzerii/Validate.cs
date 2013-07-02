@@ -19,7 +19,7 @@ namespace Baza_pizzerii
 
             if (!Regex.IsMatch(pass, @"^[a-zA-Z0-9]*$"))
             {
-                msg = "Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.";
+                msg = "Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter (ang.) i cyfr.";
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace Baza_pizzerii
 
             if (!Regex.IsMatch(pass1, @"^[a-zA-Z0-9]*$"))
             {
-                msg = "Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter i cyfr.";
+                msg = "Hasło zawiera niepoprawne znaki! \nPoprawne hasło składa się wyłącznie z liter (ang.) i cyfr.";
                 return false;
             }
 
@@ -52,7 +52,7 @@ namespace Baza_pizzerii
 
         public static bool OnlyAlphaNumeric(string text, string fieldname, out string msg)
         {
-            if (!Regex.IsMatch(text, @"^[a-zA-Z0-9]*$"))
+            if (!Regex.IsMatch(text, @"^[a-zA-Z0-9 ęóąśżźćńĘÓĄŚŻŹŃĘłŁ]*$"))
             {
                 msg = fieldname + " zawiera niepoprawne znaki! \nDozwolone są wyłącznie litery i cyfry.";
                 return false;
@@ -61,9 +61,20 @@ namespace Baza_pizzerii
             return true;
         }
 
+        public static bool AlphaNumericSpace(string text, string fieldname, out string msg)
+        {
+            if (!Regex.IsMatch(text, @"^[a-zA-Z0-9 ęóąśżźćńĘÓĄŚŻŹŃĘłŁ]*$"))
+            {
+                msg = fieldname + " zawiera niepoprawne znaki! \nDozwolone są wyłącznie litery, cyfry i spacje.";
+                return false;
+            }
+            msg = "";
+            return true;
+        }
+
         public static bool OnlyLetters(string text, string fieldname, out string msg)
         {
-            if (!Regex.IsMatch(text, @"^[a-zA-Z]*$"))
+            if (!Regex.IsMatch(text, @"^[a-zA-Z ęóąśżźćńĘÓĄŚŻŹŃĘłŁ]*$"))
             {
                 msg = fieldname + " zawiera niepoprawne znaki! \nDozwolone są wyłącznie litery.";
                 return false;
@@ -82,7 +93,7 @@ namespace Baza_pizzerii
 
             if (!Regex.IsMatch(login, @"^[a-zA-Z][a-zA-Z0-9]*$"))
             {
-                msg = "Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą.";
+                msg = "Login zawiera niepoprawne znaki! \nW poprawnym loginie pierwszy znak jest literą, a reszta znaków literą lub cyfrą. (litery alf. ang.)";
                 return false;
             }
             msg = "";
@@ -115,8 +126,27 @@ namespace Baza_pizzerii
                 return false;
             }
 
-            if (!Regex.IsMatch(address, @"^[a-zA-Z0-9.,-/ ]*$")) {
+            if (!Regex.IsMatch(address, @"^[a-zA-Z0-9.,-/ ęóąśżźćńĘÓĄŚŻŹŃĘłŁ]*$"))
+            {
                 msg = "Adres jest niepoprawny!\nPowinien składać się wyłącznie z liter, cyfr i znaków - / . ,";
+                return false;
+            }
+
+            msg = "";
+            return true;
+        }
+
+        public static bool WWW(string address, out string msg)
+        {
+            if (address.Length == 0)
+            {
+                msg = "Adres WWW nie może być pusty!";
+                return false;
+            }
+
+            if (!Regex.IsMatch(address, @"^[a-zA-Z0-9.-_/ęóąśżźćńĘÓĄŚŻŹŃĘłŁ]*$"))
+            {
+                msg = "Adres www jest niepoprawny!\nPowinien składać się wyłącznie z liter, cyfr i znaków - _ / .";
                 return false;
             }
 
