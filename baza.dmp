@@ -124,8 +124,10 @@ CREATE TABLE oferta_pizza
 
 CREATE DOMAIN rodzajPr AS TEXT
 CHECK (VALUE IN (
-		'inne danie',
-		'napoj'));
+				'alkohol',
+				'napoj',
+				'danie',
+				'dodatek'));
 		
 CREATE TABLE inny_produkt 
 (
