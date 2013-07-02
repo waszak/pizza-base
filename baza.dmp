@@ -537,6 +537,7 @@ GRANT ALL PRIVILEGES ON inny_produkt TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON opinia TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON ocena_opinii TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON laczna_ocena TO wlasciciel_pizzerii; 
+GRANT SELECT, USAGE	 ON pizzeria_id_pizzeria_seq TO wlasciciel_pizzerii;
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- - -                                                                       - - -

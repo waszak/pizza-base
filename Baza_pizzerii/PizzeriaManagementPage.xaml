@@ -17,10 +17,10 @@
         </Menu>
 
         <Grid>
-            <ListView Name="Pizzerie" Margin="64,152,-608,-296"  ItemsSource="{Binding Path=Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600">
+            <ListView Name="Pizzerie" Margin="40,150,-584,-294"  ItemsSource="{Binding Path=Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600">
                 <ListView.View>
                     <GridView >
-                        
+
                         <GridView.Columns>
                             <GridViewColumn Header="Id"
                             DisplayMemberBinding="{Binding Path=id_pizzeria}" />
@@ -35,10 +35,13 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        <Button Content="Dodaj" Canvas.Left="692" Canvas.Top="152" Width="75" Click="AddNewPizzeria_Click" />
-        <Button Content="Usuń" Canvas.Left="692" Canvas.Top="179" Width="75" Click="DeletePizzeria_Click"/>
-        <Button Content="Edytuj" Canvas.Left="692" Canvas.Top="206" Width="75" Click="EditPizzeria_Click" />
+
         <Label Content="Lista Twoich pizzerii:" Canvas.Left="288" Canvas.Top="92" Foreground="White" Height="30" Width="206" FontWeight="ExtraBold" FontSize="15"/>
+
+        <Button Content="Dodaj pizzerię" Canvas.Left="652" Canvas.Top="150" Width="122" Click="AddNewPizzeria_Click" />
+        <Button Content="Usuń pizzerię" Canvas.Left="652" Canvas.Top="177" Width="122" Click="DeletePizzeria_Click"/>
+        <Button Content="Edytuj dane pizzerii" Canvas.Left="652" Canvas.Top="204" Width="122" Click="EditPizzeria_Click" />
+        <Button Content="Edytuj menu pizzerii" Canvas.Left="652" Canvas.Top="231" Width="122" Click="EditMenu_Click" />
 
 
     </Canvas>

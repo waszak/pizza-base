@@ -67,7 +67,6 @@ namespace Baza_pizzerii
                 return;
             }
             DataRowView  r = (DataRowView)Pizzerie.Items[selected];
-            MessageBox.Show(r[0].ToString());
 
             NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
             string sql = "DELETE FROM pizzeria WHERE id_pizzeria = " + r[0].ToString();
@@ -94,10 +93,20 @@ namespace Baza_pizzerii
                 return;
             }
 
+            DataRowView  r = (DataRowView)Pizzerie.Items[selected];
+            App.Current.Properties["id_pizzeria"] = r[0].ToString();
 
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new EditPizzeria());
         }
 
         private void AddNewPizzeria_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new AddPizzeriaPage());
+        }
+
+        private void EditMenu_Click(object sender, RoutedEventArgs e)
         {
             int selected = Pizzerie.SelectedIndex;
             if (selected < 0)
@@ -106,6 +115,11 @@ namespace Baza_pizzerii
                 return;
             }
 
+            DataRowView r = (DataRowView)Pizzerie.Items[selected];
+            App.Current.Properties["id_pizzeria"] = r[0].ToString();
+
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new EditMenuPage());
 
         }
     }
