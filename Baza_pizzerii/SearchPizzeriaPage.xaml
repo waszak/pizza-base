@@ -11,9 +11,9 @@
     </Page.Background>
 
     <Canvas>
-        <TextBox Height="43" Name="textBox1" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
+        <TextBox Height="43" Name="pizzeriaAddress_TextBox" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
 
-        <ComboBox Height="43" HorizontalAlignment="Left" Name="comboBox1" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="319" Canvas.Top="32">
+        <ComboBox Height="43" HorizontalAlignment="Left" Name="City_comboBox" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="319" Canvas.Top="32">
             <ComboBoxItem IsSelected="True">
                 Wrocław
             </ComboBoxItem>
@@ -22,19 +22,29 @@
             </ComboBoxItem>
         </ComboBox>
 
-        <Button Height="43" Name="button1" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
+        <Button Height="43" Name="buttonSearch" Click="searchPizzeria_Click" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
                 BorderThickness="0" Canvas.Left="445" Canvas.Top="32" >
             <Grid>
-                <Image Source="Resources/search.png"/>
+                <Image Source="Resources/search.png" />
             </Grid>
         </Button>
-        <ListView Height="482" HorizontalAlignment="Left" Name="listView1" VerticalAlignment="Top" Width="748" Canvas.Left="10" Canvas.Top="80" />
-        <ScrollBar Height="482" HorizontalAlignment="Left" Name="scrollBar1" VerticalAlignment="Top" Width="17" Canvas.Left="741" Canvas.Top="80" />
+        <DataGrid Height="482" HorizontalAlignment="Left" DataContext="{Binding ViewSearchPizzeria}" Name="Pizzeria_dataGrid" ItemsSource ="{Binding}" SelectedItem ="{Binding Path=SelectedItem,  NotifyOnSourceUpdated=True, Mode=TwoWay}"  IsReadOnly="True" AutoGenerateColumns="False" VerticalAlignment="Top" Width="748" Canvas.Left="10" Canvas.Top="80" >
+            <DataGrid.Columns >
+                <DataGridTextColumn Header="Id" Binding="{Binding Path=id_pizzeria, Mode=TwoWay}" Visibility="Hidden"/>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Path=nazwa, Mode=TwoWay}" />
+                <DataGridTextColumn Header="Miasto" Binding="{Binding Path=miasto, Mode=TwoWay}" />
+            </DataGrid.Columns>
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="selectPizzeria"/>
+                </Style>
+            </DataGrid.ItemContainerStyle>
 
+        </DataGrid>
         <Menu Width="240">
             <MenuItem Header="Szukaj" Width="80">
-                <MenuItem Header="Pizzerii" Click="searchPizzeria_Click"/>
-                <MenuItem Header="Pizzy" Click="searchPizza_Click"/>
+                <MenuItem Header="Pizzerii" Click="searchPizzeriaPage_Click"/>
+                <MenuItem Header="Pizzy" Click="searchPizzaPage_Click"/>
             </MenuItem>
             <MenuItem Header="Moje konto" Width="80">
                 <MenuItem Header="Wyświetl" Click="myAccount_Click"/>
@@ -46,3 +56,5 @@
     </Canvas>
 
 </Page>
+
+
