@@ -16,54 +16,63 @@ namespace Baza_pizzerii {
     /// <summary>
     /// Interaction logic for PizzeriaPage.xaml
     /// </summary>
-    
+
     public partial class PizzeriaPage : Page {
         private string pizzeria_id;
         public PizzeriaPage(string id) {
             InitializeComponent();
             this.pizzeria_id = id;
             IntializeLabels();
-           // IntializePizzas();
+            IntializePizzas();
         }
         private void IntializePizzas() {
-            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
-            string sql = "SELECT id_pizza, pizza.nazwa, skladnik.nazwa " +
-                                "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" 
-                                     +"join sklad using(id_pizza) join skladnik using(id_skladnik)"+ 
-                                "WHERE id_pizzeria = @id;";
-            conn.Open();
-            Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
-            query.Parameters.AddWithValue("@id", this.pizzeria_id);
-            query.Prepare();
-            Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-        }
-        private void IntializeLabels(){
-            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
-            string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
-                                "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
-                                "WHERE id_pizzeria = @id;";
-            conn.Open();
-            Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
-            query.Parameters.AddWithValue("@id", this.pizzeria_id);
-            query.Prepare();
-            Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-            if (reader.Read()) {
-                string name = reader.GetString(1);
-                string adress = reader.GetString(2)+" " + reader.GetString(3);
-                string phone = reader.GetString(4);
-                string www = reader.GetString(5);
-                float ocena = reader.GetFloat(6);
-                int liczba_ocen = reader.GetInt32(7);
-                this.name_label.Content = name;
-                this.adress_label.Content = adress;
-                this.phone_label.Content = phone;
-                this.www_label.Content = www;
-                this.grade_label.Content = String.Format("{0:F2} z {1}", ocena, liczba_ocen);
-                
-               
-            }
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
 
-            conn.Close();
+                string sql = "SELECT id_pizza, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', ') " +
+                                    "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)"+
+                                          "join sklad using(id_pizza) join skladnik using(id_skladnik)" +
+                                    " WHERE id_pizzeria = @id"+
+                                    " GROUP BY id_pizza, pizza.nazwa ORDER BY pizza.nazwa;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@id", this.pizzeria_id);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    Pizza pizza = new Pizza(reader.GetInt32(0).ToString(), reader.GetString(1));
+                    pizza.pizza_ingredients = reader.GetString(2);
+                    pizza.pizza_price_per_size = "10";
+                    ListViewItem item = new ListViewItem();
+                    this.Pizza_ListView.Items.Add(pizza);
+                }
+            }
+        }
+
+        private void IntializeLabels(){
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+                string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
+                                    "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
+                                    "WHERE id_pizzeria = @id;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@id", this.pizzeria_id);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                if (reader.Read()) {
+                    string name = reader.GetString(1);
+                    string adress = reader.GetString(2) + " " + reader.GetString(3);
+                    string phone = reader.GetString(4);
+                    string www = reader.GetString(5);
+                    float ocena = reader.GetFloat(6);
+                    int liczba_ocen = reader.GetInt32(7);
+                    this.name_label.Content = name;
+                    this.adress_label.Content = adress;
+                    this.phone_label.Content = phone;
+                    this.www_label.Content = www;
+                    this.grade_label.Content = String.Format("{0:F2} z {1}", ocena, liczba_ocen);
+
+
+                }
+
+            }
         }
         private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
@@ -96,6 +105,28 @@ namespace Baza_pizzerii {
         }
     }
 
-
+    public class Pizza {
+        public Pizza(string id_pizza, string pizza_name){
+            this.id_pizza = id_pizza;
+            this.pizza_name = pizza_name;
+            this.pizza_price_per_size = "ss";
+        }
+        public string id_pizza {
+            get;
+            set;
+        }
+        public string pizza_name {
+            get; 
+            set;
+        }
+        public string pizza_ingredients {
+            get;
+            set;
+        }
+        public string pizza_price_per_size {
+            get;
+            set;
+        }
+    }
 
 }
