@@ -27,7 +27,7 @@
                     <GridViewColumn Header="Składniki" DisplayMemberBinding="{Binding Path=ingridients}"/>
                     <GridViewColumn Header="Nazwa pizzeri" DisplayMemberBinding="{Binding Path=name}"/>
                     <GridViewColumn Header="Miasto" DisplayMemberBinding="{Binding Path=city}"/>
-                    <GridViewColumn Header="ulica" DisplayMemberBinding="{Binding Path=adress}"/>
+                    <GridViewColumn Header="Ulica" DisplayMemberBinding="{Binding Path=adress}"/>
                 </GridView>
             </ListView.View>
         </ListView>
@@ -49,7 +49,7 @@
                 <MenuItem.ItemTemplate >
                     <DataTemplate >
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsSelected}"
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
                            Width="20" />
                             <TextBlock Text="{Binding Name}"
                            Width="60" />

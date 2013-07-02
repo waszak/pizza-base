@@ -21,8 +21,9 @@ namespace Baza_pizzerii {
      class Ingredient {
         public Ingredient() {
         }
-
+        public bool IsSelected { get; set; }
         public string Name { get; set; }
+  
     }
     public partial class SearchPizzaPage : Page {
         public SearchPizzaPage() {
@@ -52,6 +53,7 @@ namespace Baza_pizzerii {
                 while (reader.Read()) {
                     Ingredient i = new Ingredient();
                     i.Name = reader.GetString(0);
+                    i.IsSelected = false;
                     ingredients.Add(i);
                 }
             }
@@ -114,11 +116,22 @@ namespace Baza_pizzerii {
                     p.adress = reader.GetString(3);
                     p.name_pizza = reader.GetString(4);
                     p.ingridients = reader.GetString(5);
-                    this.Pizza_listView.Items.Add(p);
+                    
+                    if(matchIngridients(p.ingridients))this.Pizza_listView.Items.Add(p);
                 }
             }
         }
 
+        private bool matchIngridients(string ingridients) {
+ 
+            foreach (object item in menuIngredients.Items) {
+                if (((Ingredient)item).IsSelected) {
+                    if (!ingridients.Contains(((Ingredient)item).Name)) return false;
+                }
+
+            }
+            return true;
+        }
         private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new SearchPizzeriaPage());

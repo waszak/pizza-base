@@ -77,7 +77,7 @@ namespace Baza_pizzerii {
             this.Pizzeria_listView.Items.Clear();
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
                 if (pizzeriaAddress_TextBox.Text.Trim() == "Wprowadź adres pizzerii") pizzeriaAddress_TextBox.Text = "";
-                string sql = "SELECT id_pizzeria, nazwa, miasto" +
+                string sql = "SELECT id_pizzeria, nazwa, miasto, ulica" +
                                     " FROM pizzeria" +
                                     " WHERE " + (pizzeriaAddress_TextBox.Text.Trim() != ""
                                                         ? "(miasto like @miasto and (ulica like @ulicaFormat1 or ulica like @ulicaFormat2))"
@@ -100,6 +100,7 @@ namespace Baza_pizzerii {
                     p.Id = reader.GetInt32(0).ToString();
                     p.name = reader.GetString(1);
                     p.city = reader.GetString(2);
+                    p.adress = reader.GetString(3);
                     this.Pizzeria_listView.Items.Add(p);
                 }
             }
@@ -130,6 +131,10 @@ namespace Baza_pizzerii {
                 set;
             }
             public string city {
+                get;
+                set;
+            }
+            public string adress {
                 get;
                 set;
             }

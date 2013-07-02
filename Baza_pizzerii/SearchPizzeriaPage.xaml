@@ -27,6 +27,7 @@
                     <GridViewColumn Header="Id" Width="0" DisplayMemberBinding="{Binding Path=Id}"/>
                     <GridViewColumn Header="Nazwa" DisplayMemberBinding="{Binding Path=name}"/>
                     <GridViewColumn Header="Miasto" DisplayMemberBinding="{Binding Path=city}"/>
+                    <GridViewColumn Header="Ulica" DisplayMemberBinding="{Binding Path=adress}"/>
                 </GridView>
             </ListView.View>
         </ListView>
