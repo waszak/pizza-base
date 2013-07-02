@@ -48,17 +48,17 @@ namespace Baza_pizzerii {
             this.NavigationService.Navigate(new LoginPage());
         }
         private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
-            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
-            string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www " +
-                                "FROM pizzeria " +
-                                "WHERE miasto like @miasto;";
-            conn.Open();
-            adapter = new Npgsql.NpgsqlDataAdapter(sql, conn);
-            adapter.SelectCommand.Parameters.AddWithValue("@miasto", City_comboBox.Text);
-            dataTable = new DataTable();
-            adapter.Fill(dataTable);
-            Pizzeria_dataGrid.ItemsSource = dataTable.DefaultView;
-            conn.Close();
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+                string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www " +
+                                    "FROM pizzeria " +
+                                    "WHERE miasto like @miasto;";
+
+                adapter = new Npgsql.NpgsqlDataAdapter(sql, conn);
+                adapter.SelectCommand.Parameters.AddWithValue("@miasto", City_comboBox.Text);
+                dataTable = new DataTable();
+                adapter.Fill(dataTable);
+                Pizzeria_dataGrid.ItemsSource = dataTable.DefaultView;
+            }
         }
         private void selectPizzeria(object sender, RoutedEventArgs e) {
             DataRowView row = (DataRowView)Pizzeria_dataGrid.SelectedItems[0];

@@ -89,7 +89,8 @@ namespace Baza_pizzerii {
                 NpgsqlConnection conn = DB.loginUserToDB("gosc_konto", "gosc_haslo");
 
                 //zmienne globalne
-                App.Current.Properties["login"] = "gosc";
+                App.Current.Properties["login"] = "gosc_konto";
+                App.Current.Properties["password"] = "gosc_haslo";
                 App.Current.Properties["rola"] = "gosc";
 
                 conn.Close();
@@ -107,8 +108,7 @@ namespace Baza_pizzerii {
         }
 
 
-        private void logout_Click(object sender, RoutedEventArgs e)
-        {
+        private void logout_Click(object sender, RoutedEventArgs e){
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new LoginPage());
         }
