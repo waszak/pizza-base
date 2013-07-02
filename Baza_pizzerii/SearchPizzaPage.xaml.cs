@@ -47,12 +47,12 @@ namespace Baza_pizzerii {
             userAccountWindow.Show();
         }
 
-        private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
+        private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new SearchPizzeriaPage());
         }
 
-        private void searchPizza_Click(object sender, RoutedEventArgs e) {
+        private void searchPizzaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new SearchPizzaPage());
         }
@@ -61,5 +61,7 @@ namespace Baza_pizzerii {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new LoginPage());
         }
+
+
     }
 }

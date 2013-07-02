@@ -22,7 +22,7 @@
             </ComboBoxItem>
         </ComboBox>
 
-        <Button Name="buttonSearcg" Height="43" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
+        <Button Name="buttonSearch" Height="43" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
                 BorderThickness="0" Canvas.Left="571" Canvas.Top="32" >
             <Grid>
                 <Image Source="Resources/search.png"/>
@@ -33,8 +33,8 @@
 
         <Menu Width="240">
             <MenuItem Header="Szukaj" Width="80">
-                <MenuItem Header="Pizzerii" Click="searchPizzeria_Click"/>
-                <MenuItem Header="Pizzy" Click="searchPizza_Click"/>
+                <MenuItem Header="Pizzerii" Click="searchPizzeriaPage_Click"/>
+                <MenuItem Header="Pizzy" Click="searchPizzaPage_Click"/>
             </MenuItem>
             <MenuItem Header="Moje konto" Width="80" Click="myAccount_Click" />
             <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
