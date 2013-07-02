@@ -23,6 +23,19 @@ namespace Baza_pizzerii {
             InitializeComponent();
             this.pizzeria_id = id;
             IntializeLabels();
+           // IntializePizzas();
+        }
+        private void IntializePizzas() {
+            Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];
+            string sql = "SELECT id_pizza, pizza.nazwa, skladnik.nazwa " +
+                                "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" 
+                                     +"join sklad using(id_pizza) join skladnik using(id_skladnik)"+ 
+                                "WHERE id_pizzeria = @id;";
+            conn.Open();
+            Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+            query.Parameters.AddWithValue("@id", this.pizzeria_id);
+            query.Prepare();
+            Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
         }
         private void IntializeLabels(){
             Npgsql.NpgsqlConnection conn = (Npgsql.NpgsqlConnection)App.Current.Properties["Connection"];

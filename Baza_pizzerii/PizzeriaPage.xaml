@@ -28,7 +28,18 @@
         <Label Canvas.Left="12" Canvas.Top="163" Content="Ocena"  FontSize="14" Foreground="White" Height="28" Name="label4" FontWeight="ExtraBold" />
         <TabControl Canvas.Left="12" Canvas.Top="228" Height="360" Name="tabControl1" Width="776">
             <TabItem Header="Pizze" Name="tabItem1">
-                <Grid />
+                <Grid >
+                    <ListView>
+                        <ListView.View>
+                            <GridView >
+                                <GridViewColumn Header="Pizza_Id" DisplayMemberBinding="id_pizza"/>
+                                <GridViewColumn Header="Nazwa pizzy" DisplayMemberBinding="pizza_name"/>
+                                <GridViewColumn Header="Składniki" DisplayMemberBinding="pizza_ingredients"/>
+                                <GridViewColumn Header="Cena" DisplayMemberBinding="pizza_price_per_size" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
             </TabItem>
             <TabItem Header="Inne dania" Name="tabItem2">
                 <Grid />
