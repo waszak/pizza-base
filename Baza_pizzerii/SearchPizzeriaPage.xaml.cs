@@ -66,7 +66,7 @@ namespace Baza_pizzerii {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new PizzeriaPage(((int)row.Row[0]).ToString()));
         }
-
+       
         Npgsql.NpgsqlDataAdapter adapter = null;
         DataTable dataTable = null;
 

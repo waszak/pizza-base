@@ -24,6 +24,10 @@ namespace Baza_pizzerii {
             this.pizzeria_id = id;
             IntializeLabels();
             IntializePizzas();
+            IntializeMeals();
+            IntializeDrinks();
+            IntializeExtra();
+            IntializeAlkohol();
             //Pierwsza kolumna jest ukryta.
             GridView gridview = (GridView)((ListView)this.Pizza_ListView).View;
             GridViewColumn column = gridview.Columns[0];
@@ -34,6 +38,45 @@ namespace Baza_pizzerii {
             };
 
         }
+
+        private void otherProductQuery(string rodzaj, Npgsql.NpgsqlConnection conn, out Npgsql.NpgsqlCommand  query) {
+            string sql = "SELECT inny_produkt.nazwa, cena" +
+                                   " FROM pizzeria join oferta_inny_produkt using(id_pizzeria) join inny_produkt using(id_produkt)" +
+                                   " WHERE id_pizzeria = @id and inny_produkt.rodzaj = @rodzaj" +
+                                   " GROUP BY id_produkt, inny_produkt.nazwa,cena ORDER BY inny_produkt.nazwa;";
+            query = new Npgsql.NpgsqlCommand(sql, conn);
+            query.Parameters.AddWithValue("@id", this.pizzeria_id);
+            query.Parameters.AddWithValue("@rodzaj", rodzaj);
+            query.Prepare();
+        }
+
+        private void IntializeProduct(ListView list, string rodzaj) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+                Npgsql.NpgsqlCommand query;
+                otherProductQuery(rodzaj, conn, out query);
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    Product p = new Product();
+                    p.name = reader.GetString(0);
+                    p.price = (!reader.IsDBNull(1) ? reader.GetFloat(1) : (float?)null);
+                    list.Items.Add(p);
+                }
+            }
+        }
+        
+        private void IntializeAlkohol() {
+            IntializeProduct(this.Extra_ListView, "alkohol");
+        }
+        private void IntializeExtra() {
+            IntializeProduct(this.Extra_ListView, "dodatek");
+        }
+        private void IntializeDrinks() {
+            IntializeProduct(this.Drinks_ListView, "napoj");
+        }
+        private void IntializeMeals() {
+            IntializeProduct(this.OtherMeals_ListView, "danie");
+        }
+
         private void IntializePizzas() {
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
 
@@ -50,7 +93,7 @@ namespace Baza_pizzerii {
                     Pizza pizza = new Pizza(reader.GetInt32(0).ToString(), reader.GetString(1));
                     pizza.pizza_ingredients = reader.GetString(2);
                     pizza.pizza_size = (!reader.IsDBNull(3) ? reader.GetInt32(3) : (int?)null);
-                    pizza.pizza_price = (!reader.IsDBNull(4) ? reader.GetFloat(4) : (float?)null);
+                    pizza.price = (!reader.IsDBNull(4) ? reader.GetFloat(4) : (float?)null);
                     ListViewItem item = new ListViewItem();
                     this.Pizza_ListView.Items.Add(pizza);
                 }
@@ -69,8 +112,8 @@ namespace Baza_pizzerii {
                 while (reader.Read()) {
                     string name = reader.GetString(1);
                     string adress = reader.GetString(2) + " " + reader.GetString(3);
-                    string phone = reader.GetString(4);
-                    string www = reader.GetString(5);
+                    string phone = (reader.IsDBNull(4)?"":reader.GetString(4));
+                    string www = (reader.IsDBNull(5) ? "" : reader.GetString(5));
                     float ocena = reader.GetFloat(6);
                     int liczba_ocen = reader.GetInt32(7);
                     this.name_label.Content = name;
@@ -113,21 +156,36 @@ namespace Baza_pizzerii {
                 return;
             }
         }
-    }
 
-    public class Pizza {
+        void Pizza_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as Pizza;
+            if (item != null) {
+                Window x = new Feedback();
+                x.ShowDialog();
+            }
+        }
+    }
+    public class Product {
+        public string name {
+            get;
+            set;
+        }
+        public float? price {
+            get;
+            set;
+        }
+    }
+    
+    public class Pizza:Product {
         public Pizza(string id_pizza, string pizza_name) {
             this.id_pizza = id_pizza;
-            this.pizza_name = pizza_name;
+            this.name = pizza_name;
         }
         public string id_pizza {
             get;
             set;
         }
-        public string pizza_name {
-            get;
-            set;
-        }
+        
         public string pizza_ingredients {
             get;
             set;
@@ -137,10 +195,7 @@ namespace Baza_pizzerii {
             set;
         }
 
-        public float? pizza_price {
-            get;
-            set;
-        }
+ 
     }
 
 }
