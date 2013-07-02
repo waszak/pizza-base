@@ -16,6 +16,8 @@
                 <MenuItem Header="Pizze" Click="EditMenuPizza_Click"/>
                 <MenuItem Header="Inne dania" Click="EditMenuOtherDishes_Click"/>
                 <MenuItem Header="Napoje" Click="EditMenuDrinks_Click"/>
+                <MenuItem Header="Alkohole" Click="EditMenuAlkohols_Click"/>
+                <MenuItem Header="Dodatki" Click="EditMenuAdditions_Click"/>
             </MenuItem>
             <MenuItem Header="Moje konto" Width="80" Click="myAccount_Click" />
             <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>

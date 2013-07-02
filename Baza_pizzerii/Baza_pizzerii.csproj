@@ -65,6 +65,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DB.cs" />
+    <Compile Include="EditMenuAdditionPage.xaml.cs">
+      <DependentUpon>EditMenuAdditionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditMenuAlkoholPage.xaml.cs">
+      <DependentUpon>EditMenuAlkoholPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditMenuDrinksPage.xaml.cs">
       <DependentUpon>EditMenuDrinksPage.xaml</DependentUpon>
     </Compile>
@@ -143,6 +149,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AddPizzeriaPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditMenuAdditionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditMenuAlkoholPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
