@@ -23,35 +23,29 @@
 
 
         <Grid>
-            <ListView Name="Pizzerie" Margin="18,82,-562,-226"  ItemsSource="{Binding Path=Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600" MinHeight="160" MaxHeight="160" >
+            <ListView Name="myOtherDishes" Margin="18,82,-562,-226"  ItemsSource="{Binding Path=Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600" MinHeight="160" MaxHeight="160" >
                 <ListView.View>
                     <GridView >
 
                         <GridView.Columns>
                             <GridViewColumn Header="Id"
-                            DisplayMemberBinding="{Binding Path=id_pizzeria}" />
+                            DisplayMemberBinding="{Binding Path=id_oferta_inny_produkt}" />
                             <GridViewColumn Header="Nazwa"
                             DisplayMemberBinding="{Binding Path=nazwa}" />
-                            <GridViewColumn Header="Miasto"
-                            DisplayMemberBinding="{Binding Path=miasto}" />
-                            <GridViewColumn Header="Ulica"
-                            DisplayMemberBinding="{Binding Path=ulica}" />
+                            <GridViewColumn Header="Cena"
+                            DisplayMemberBinding="{Binding Path=cena}" />
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
             </ListView>
-            <ListView x:Name="Pizzerie_Copy" Margin="18,283,-562,-551"  ItemsSource="{Binding Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600" MinHeight="250" MaxHeight="250">
+            <ListView Name="allOtherDshes" Margin="18,283,-562,-551"  ItemsSource="{Binding Table, Mode=TwoWay}" MinWidth="600" MaxWidth="600" MinHeight="250" MaxHeight="250">
                 <ListView.View>
                     <GridView >
 
                         <GridViewColumn Header="Id"
-            				DisplayMemberBinding="{Binding id_pizzeria}" />
+            				DisplayMemberBinding="{Binding id_produkt}" />
                         <GridViewColumn Header="Nazwa"
             				DisplayMemberBinding="{Binding nazwa}" />
-                        <GridViewColumn Header="Miasto"
-            				DisplayMemberBinding="{Binding miasto}" />
-                        <GridViewColumn Header="Ulica"
-            				DisplayMemberBinding="{Binding ulica}" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -64,7 +58,7 @@
         <Label Content="Lista wszystkich dań: " Canvas.Left="261" Canvas.Top="270" Foreground="Black" Background="White"  Width="159" FontWeight="ExtraBold"/>
 
         <Label Content="Cena [zł]:" Canvas.Left="634" Canvas.Top="302" Foreground="Black" Background="White" FontWeight="ExtraBold" Width="89"  />
-        <TextBox Height="26" Canvas.Left="723" TextWrapping="Wrap" Canvas.Top="302" Width="50" MaxLength="6"/>
+        <TextBox Name="Price_tb" Height="26" Canvas.Left="723" TextWrapping="Wrap" Canvas.Top="302" Width="50" MaxLength="6"/>
 
 
     </Canvas>

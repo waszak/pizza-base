@@ -137,6 +137,7 @@ CREATE TABLE inny_produkt
 
 CREATE TABLE oferta_inny_produkt 
 (
+	id_oferta_inny_produkt SERIAL PRIMARY KEY,
     id_produkt integer NOT NULL REFERENCES inny_produkt (id_produkt) ON DELETE RESTRICT ON UPDATE CASCADE,
     id_pizzeria integer NOT NULL REFERENCES pizzeria (id_pizzeria) ON DELETE CASCADE ON UPDATE CASCADE,
 	cena real CHECK (cena >= 0)
@@ -462,7 +463,15 @@ EXECUTE PROCEDURE oblicz_ocene_pizzyPizzerii_f_upd();
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 CREATE FUNCTION inicjuj_ocene_pizzerii_f() RETURNS TRIGGER AS $X$
+DECLARE
+	lb integer;
 BEGIN
+	SELECT COUNT(*) INTO lb FROM laczna_ocena
+	WHERE NEW.id_pizzeria = id_pizzeria AND id_pizza IS NULL;
+	
+	IF lb > 0 THEN return NULL;
+	END IF;
+		
 	INSERT INTO laczna_ocena VALUES (NEW.id_pizzeria, NULL, 0, 0);
 	RETURN NULL;
 END
@@ -479,7 +488,15 @@ EXECUTE PROCEDURE inicjuj_ocene_pizzerii_f();
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 CREATE FUNCTION inicjuj_ocene_pizzy_f() RETURNS TRIGGER AS $X$
+DECLARE
+	lb integer;
 BEGIN
+	SELECT COUNT(*) INTO lb FROM laczna_ocena
+	WHERE NEW.id_pizzeria = id_pizzeria AND NEW.id_pizza = id_pizza;
+	
+	IF lb > 0 THEN return NULL;
+	END IF;
+	
 	INSERT INTO laczna_ocena VALUES (NEW.id_pizzeria, NEW.id_pizza, 0, 0);
 	RETURN NULL;
 END
@@ -536,6 +553,9 @@ GRANT ALL PRIVILEGES ON opinia TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON ocena_opinii TO wlasciciel_pizzerii;
 GRANT ALL PRIVILEGES ON laczna_ocena TO wlasciciel_pizzerii; 
 GRANT SELECT, USAGE	 ON pizzeria_id_pizzeria_seq TO wlasciciel_pizzerii;
+GRANT SELECT, USAGE	 ON oferta_inny_produkt_id_oferta_inny_produkt_seq TO wlasciciel_pizzerii;
+GRANT SELECT, USAGE	 ON oferta_pizza_id_oferta_pizza_seq TO wlasciciel_pizzerii;
+
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- - -                                                                       - - -
