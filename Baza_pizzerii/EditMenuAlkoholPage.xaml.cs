@@ -17,11 +17,11 @@ using Npgsql;
 namespace Baza_pizzerii
 {
     /// <summary>
-    /// Interaction logic for EditMenuOtherDishesPage.xaml
+    /// Interaction logic for EditMenuAlkoholPage.xaml
     /// </summary>
-    public partial class EditMenuOtherDishesPage : Page
+    public partial class EditMenuAlkoholPage : Page
     {
-        public EditMenuOtherDishesPage()
+        public EditMenuAlkoholPage()
         {
             InitializeComponent();
             InitializeData();
@@ -30,19 +30,19 @@ namespace Baza_pizzerii
         private void InitializeData()
         {
             NpgsqlDataAdapter pgDataAdapter1 = new NpgsqlDataAdapter();
-            pgDataAdapter1.SelectCommand = new NpgsqlCommand("SELECT id_produkt, nazwa FROM inny_produkt WHERE rodzaj = 'danie';",
+            pgDataAdapter1.SelectCommand = new NpgsqlCommand("SELECT id_produkt, nazwa FROM inny_produkt WHERE rodzaj = 'alkohol';",
                                                             DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString()));
             DataSet ds1 = new DataSet();
             pgDataAdapter1.Fill(ds1);
-            allOtherDshes.DataContext = ds1.Tables[0].DefaultView;
+            allAlkohols.DataContext = ds1.Tables[0].DefaultView;
 
             NpgsqlDataAdapter pgDataAdapter2 = new NpgsqlDataAdapter();
             pgDataAdapter2.SelectCommand = new NpgsqlCommand("SELECT id_oferta_inny_produkt, nazwa, cena FROM oferta_inny_produkt JOIN inny_produkt USING (id_produkt)" +
-                                                                " WHERE rodzaj = 'danie' AND id_pizzeria = " + App.Current.Properties["id_pizzeria"].ToString(),
+                                                                " WHERE rodzaj = 'alkohol' AND id_pizzeria = " + App.Current.Properties["id_pizzeria"].ToString(),
                                                                 DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString()));
             DataSet ds2 = new DataSet();
             pgDataAdapter2.Fill(ds2);
-            myOtherDishes.DataContext = ds2.Tables[0].DefaultView;
+            myAlkohols.DataContext = ds2.Tables[0].DefaultView;
 
         }
 
@@ -88,16 +88,16 @@ namespace Baza_pizzerii
             this.NavigationService.Navigate(new EditMenuAdditionPage());
         }
 
-
-        private void DeleteOtherDish_Click(object sender, RoutedEventArgs e)
+        private void DeleteAlkohol_Click(object sender, RoutedEventArgs e)
         {
-            int selected = myOtherDishes.SelectedIndex;
+
+            int selected = myAlkohols.SelectedIndex;
             if (selected < 0)
             {
                 MessageBox.Show("Nie wybrałeś żadnego produktu!");
                 return;
             }
-            DataRowView r = (DataRowView)myOtherDishes.Items[selected];
+            DataRowView r = (DataRowView)myAlkohols.Items[selected];
 
             NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
             string sql = "DELETE FROM oferta_inny_produkt WHERE id_oferta_inny_produkt = " + r[0].ToString();
@@ -109,7 +109,7 @@ namespace Baza_pizzerii
                 conn.Close(); conn.ClearPool();
 
                 this.NavigationService.RemoveBackEntry();
-                this.NavigationService.Navigate(new EditMenuOtherDishesPage());
+                this.NavigationService.Navigate(new EditMenuAlkoholPage());
             }
             catch (Exception msg)
             {
@@ -121,7 +121,7 @@ namespace Baza_pizzerii
             }
         }
 
-        private void AddOtherDish_Click(object sender, RoutedEventArgs e)
+        private void AddAlkohol_Click(object sender, RoutedEventArgs e)
         {
             string err_msg;
             if (!Validate.RealNumber(Price_tb.Text, out err_msg))
@@ -132,13 +132,13 @@ namespace Baza_pizzerii
             string Price = Price_tb.Text;
             Price = Price.Replace('.', ',');
 
-            int selected = allOtherDshes.SelectedIndex;
+            int selected = allAlkohols.SelectedIndex;
             if (selected < 0)
             {
                 MessageBox.Show("Nie wybrałeś żadnego produktu!");
                 return;
             }
-            DataRowView r = (DataRowView)allOtherDshes.Items[selected];
+            DataRowView r = (DataRowView)allAlkohols.Items[selected];
 
             NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
             string sql = "INSERT INTO  oferta_inny_produkt (id_produkt, id_pizzeria, cena) VALUES (@id_produkt, @id_pizzeria, @cena);";
@@ -155,19 +155,16 @@ namespace Baza_pizzerii
                 conn.Close(); conn.ClearPool();
 
                 this.NavigationService.RemoveBackEntry();
-                this.NavigationService.Navigate(new EditMenuOtherDishesPage());
+                this.NavigationService.Navigate(new EditMenuAlkoholPage());
             }
             catch (Exception msg)
             {
                 conn.Close(); conn.ClearPool();
                 #if DEBUG
-                MessageBox.Show(msg.ToString());
+                    MessageBox.Show(msg.ToString());
                 #endif
                 MessageBox.Show("Wystąpił błąd podczas aktualizacji menu");
             }
-
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuOtherDishesPage());
         }
 
     }

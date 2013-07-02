@@ -76,6 +76,20 @@ namespace Baza_pizzerii
             this.NavigationService.Navigate(new EditMenuDrinksPage());
         }
 
+        private void EditMenuAlkohols_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new EditMenuAlkoholPage());
+        }
+
+        private void EditMenuAdditions_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new EditMenuAdditionPage());
+        }
+
+
+
         private void DeleteDrink_Click(object sender, RoutedEventArgs e)
         {
 
@@ -141,7 +155,6 @@ namespace Baza_pizzerii
             {
                 command.ExecuteNonQuery();
                 conn.Close(); conn.ClearPool();
-                MessageBox.Show("Pomyślnie zaktualizowano menu!");
 
                 this.NavigationService.RemoveBackEntry();
                 this.NavigationService.Navigate(new EditMenuDrinksPage());
