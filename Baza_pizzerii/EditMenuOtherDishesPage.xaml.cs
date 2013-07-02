@@ -29,20 +29,24 @@ namespace Baza_pizzerii
 
         private void InitializeData()
         {
+            NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
+
             NpgsqlDataAdapter pgDataAdapter1 = new NpgsqlDataAdapter();
-            pgDataAdapter1.SelectCommand = new NpgsqlCommand("SELECT id_produkt, nazwa FROM inny_produkt WHERE rodzaj = 'danie';",
-                                                            DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString()));
+            pgDataAdapter1.SelectCommand = new NpgsqlCommand("SELECT id_produkt, nazwa FROM inny_produkt WHERE rodzaj = 'danie';", conn);
             DataSet ds1 = new DataSet();
             pgDataAdapter1.Fill(ds1);
             allOtherDshes.DataContext = ds1.Tables[0].DefaultView;
 
+
             NpgsqlDataAdapter pgDataAdapter2 = new NpgsqlDataAdapter();
             pgDataAdapter2.SelectCommand = new NpgsqlCommand("SELECT id_oferta_inny_produkt, nazwa, cena FROM oferta_inny_produkt JOIN inny_produkt USING (id_produkt)" +
                                                                 " WHERE rodzaj = 'danie' AND id_pizzeria = " + App.Current.Properties["id_pizzeria"].ToString(),
-                                                                DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString()));
+                                                                conn);
             DataSet ds2 = new DataSet();
             pgDataAdapter2.Fill(ds2);
             myOtherDishes.DataContext = ds2.Tables[0].DefaultView;
+
+            conn.Close(); conn.ClearPool();
 
         }
 
@@ -86,6 +90,12 @@ namespace Baza_pizzerii
         {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new EditMenuAdditionPage());
+        }
+
+        private void ChoosePizzeria_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new PizzeriaManagementPage());
         }
 
 
@@ -169,6 +179,8 @@ namespace Baza_pizzerii
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new EditMenuOtherDishesPage());
         }
+
+
 
     }
 }
