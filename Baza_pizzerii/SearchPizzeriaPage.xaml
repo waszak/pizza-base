@@ -13,15 +13,8 @@
     <Canvas>
         <TextBox Height="43" Name="pizzeriaAddress_TextBox" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
 
-        <ComboBox Height="43" HorizontalAlignment="Left" Name="City_comboBox" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="319" Canvas.Top="32">
-            <ComboBoxItem IsSelected="True">
-                Wrocław
-            </ComboBoxItem>
-            <ComboBoxItem>
-                Warszawa
-            </ComboBoxItem>
-        </ComboBox>
-
+        <ComboBox Height="43" HorizontalAlignment="Left" ItemsSource="{Binding Path=City}"  SelectedItem="{Binding Path=name, Mode=TwoWay}"  DisplayMemberPath="name" SelectedValuePath="name" SelectedValue="{Binding Path=City,  Mode=TwoWay}" Name="City_comboBox" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="319" Canvas.Top="32"/>
+        
         <Button Height="43" Name="buttonSearch" Click="searchPizzeria_Click" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
                 BorderThickness="0" Canvas.Left="445" Canvas.Top="32" >
             <Grid>
