@@ -12,6 +12,10 @@
 
 
     <Canvas>
+        <Menu Width="160">
+            <MenuItem Header="Moje konto" Width="80" Click="myAccount_Click" />
+            <MenuItem Header="Wyloguj" Width="80" Click="logout_Click"/>
+        </Menu>
 
         <TextBox Name="Name_tb" Height="25" Canvas.Left="304" TextWrapping="Wrap" Canvas.Top="182" Width="200" MaxLength="100" />
         <Label Height="25" Content="Nazwa*" Canvas.Left="219" Canvas.Top="182" Background="White" Width="80" FontWeight="ExtraBold" />

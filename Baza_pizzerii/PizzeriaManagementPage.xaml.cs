@@ -119,7 +119,7 @@ namespace Baza_pizzerii
             App.Current.Properties["id_pizzeria"] = r[0].ToString();
 
             this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuPage());
+            this.NavigationService.Navigate(new EditMenuPizzaPage());
 
         }
     }

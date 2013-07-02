@@ -31,6 +31,17 @@ namespace Baza_pizzerii
             this.NavigationService.Navigate(new PizzeriaManagementPage());
         }
 
+        private void myAccount_Click(object sender, RoutedEventArgs e)
+        {
+            var userAccountWindow = new UserAccountWindow();
+            userAccountWindow.Show();
+        }
+
+        private void logout_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new LoginPage());
+        }
 
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
