@@ -11,26 +11,26 @@
     </Page.Background>
 
     <Canvas>
-        <TextBox Name="textBoxAdress" Height="43" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
-
-        <ComboBox Name="comboBoxCities" Height="43" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="321" Canvas.Top="32">
-            <ComboBoxItem IsSelected="True">
-                Wrocław
-            </ComboBoxItem>
-            <ComboBoxItem>
-                Warszawa
-            </ComboBoxItem>
-        </ComboBox>
-
-        <Button Name="buttonSearch" Height="43" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
+        <TextBox Name="pizzeriaAddress_TextBox" Height="43" Width="304" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLines="1" FontSize="16" VerticalContentAlignment="Center" Text="Wprowadź adres pizzerii" Canvas.Left="10" Canvas.Top="32"/>
+        <ComboBox Height="43" HorizontalAlignment="Left" ItemsSource="{Binding Path=City}"  SelectedItem="{Binding Path=name, Mode=TwoWay}"  DisplayMemberPath="name" SelectedValuePath="name" SelectedValue="{Binding Path=City,  Mode=TwoWay}" Name="City_comboBox" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Canvas.Left="319" Canvas.Top="32"/>
+        <Button Name="buttonSearch"  Click="searchPizza_Click" Height="43" VerticalAlignment="Top" Padding="0" BorderBrush="Transparent"
                 BorderThickness="0" Canvas.Left="571" Canvas.Top="32" >
             <Grid>
                 <Image Source="Resources/search.png"/>
             </Grid>
         </Button>
-        <ListView Height="482" HorizontalAlignment="Left" Name="listView1" VerticalAlignment="Top" Width="748" Canvas.Left="10" Canvas.Top="80" />
-        <ScrollBar Height="482" HorizontalAlignment="Left" Name="scrollBar1" VerticalAlignment="Top" Width="17" Canvas.Left="741" Canvas.Top="80" />
-
+        <ListView Height="482" HorizontalAlignment="Left"  Name="Pizza_listView" MouseDoubleClick="selectPizza"  VerticalAlignment="Top" Width="748" Canvas.Left="10" Canvas.Top="80" >
+            <ListView.View >
+                <GridView >
+                    <GridViewColumn Header="Id" Width="0" DisplayMemberBinding="{Binding Path=Id}"/>
+                    <GridViewColumn Header="Nazwa pizzy" DisplayMemberBinding="{Binding Path=name_pizza}"/>
+                    <GridViewColumn Header="Składniki" DisplayMemberBinding="{Binding Path=ingridients}"/>
+                    <GridViewColumn Header="Nazwa pizzeri" DisplayMemberBinding="{Binding Path=name}"/>
+                    <GridViewColumn Header="Miasto" DisplayMemberBinding="{Binding Path=city}"/>
+                    <GridViewColumn Header="ulica" DisplayMemberBinding="{Binding Path=adress}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
         <Menu Width="240">
             <MenuItem Header="Szukaj" Width="80">
                 <MenuItem Header="Pizzerii" Click="searchPizzeriaPage_Click"/>

@@ -45,9 +45,7 @@ namespace Baza_pizzerii {
                     p.name = reader.GetString(0);
                     this.City_comboBox.Items.Add(p);
                 }
-               
             }
-
         }
         private void myAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -74,6 +72,7 @@ namespace Baza_pizzerii {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new LoginPage());
         }
+
         private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
             this.Pizzeria_listView.Items.Clear();
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
