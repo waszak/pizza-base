@@ -11,8 +11,9 @@
     </Page.Background>
 
     <Canvas>
-        <Menu Width="240">
-            <MenuItem Header="Edytuj" Width="80">
+        <Menu Width="340">
+            <MenuItem Header="Wybór pizzerii" Width="100" Click="ChoosePizzeria_Click"/>
+            <MenuItem Header="Edytuj menu" Width="80">
                 <MenuItem Header="Pizze" Click="EditMenuPizza_Click"/>
                 <MenuItem Header="Inne dania" Click="EditMenuOtherDishes_Click"/>
                 <MenuItem Header="Napoje" Click="EditMenuDrinks_Click"/>

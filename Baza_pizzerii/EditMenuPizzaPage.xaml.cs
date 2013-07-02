@@ -29,13 +29,15 @@ namespace Baza_pizzerii
 
         private void InitializeData()
         {
+            NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
+
             NpgsqlDataAdapter pgDataAdapter1 = new NpgsqlDataAdapter();
             pgDataAdapter1.SelectCommand = new NpgsqlCommand(   "SELECT pizza.id_pizza AS id, "+
                                                                 "pizza.nazwa AS nazwa_pizzy, "+
                                                                 "array_to_string(array_agg(skladnik.nazwa), ', ') AS skladniki "+
                                                                 "FROM pizza JOIN sklad USING (id_pizza) JOIN skladnik USING (id_skladnik) "+
                                                                 "GROUP BY pizza.nazwa, pizza.id_pizza",
-                                                                DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString()));
+                                                                conn);
             DataSet ds1 = new DataSet();
             pgDataAdapter1.Fill(ds1);
             allPizzas.DataContext = ds1.Tables[0].DefaultView;
@@ -49,11 +51,12 @@ namespace Baza_pizzerii
                                                                 "FROM oferta_pizza JOIN pizza using (id_pizza) JOIN sklad USING (id_pizza) JOIN skladnik USING (id_skladnik) " +
                                                                 "GROUP BY id_pizzeria, pizza.nazwa, pizza.id_pizza, oferta_pizza.cena, oferta_pizza.wielkosc " +
                                                                 "HAVING id_pizzeria = "+ App.Current.Properties["id_pizzeria"].ToString(),
-                                                                DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString()));
+                                                                conn);
             DataSet ds2 = new DataSet();
             pgDataAdapter2.Fill(ds2);
             myPizzas.DataContext = ds2.Tables[0].DefaultView;
 
+            conn.Close(); conn.ClearPool();
         }
 
         private void myAccount_Click(object sender, RoutedEventArgs e)
@@ -98,6 +101,11 @@ namespace Baza_pizzerii
             this.NavigationService.Navigate(new EditMenuAdditionPage());
         }
 
+		private void ChoosePizzeria_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new PizzeriaManagementPage());
+        }
 
         private void DeletePizza_Click(object sender, RoutedEventArgs e)
         {
