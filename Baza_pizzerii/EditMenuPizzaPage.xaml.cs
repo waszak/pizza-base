@@ -19,7 +19,7 @@ namespace Baza_pizzerii
     /// <summary>
     /// Interaction logic for EditMenuPizzaPage.xaml
     /// </summary>
-    public partial class EditMenuPizzaPage : Page
+    public partial class EditMenuPizzaPage : EditMenuBase
     {
         public EditMenuPizzaPage()
         {
@@ -57,54 +57,6 @@ namespace Baza_pizzerii
             myPizzas.DataContext = ds2.Tables[0].DefaultView;
 
             conn.Close(); conn.ClearPool();
-        }
-
-        private void myAccount_Click(object sender, RoutedEventArgs e)
-        {
-            var userAccountWindow = new UserAccountWindow();
-            userAccountWindow.Show();
-        }
-
-        private void logout_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new LoginPage());
-        }
-
-        private void EditMenuPizza_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuPizzaPage());
-        }
-
-        private void EditMenuOtherDishes_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuOtherDishesPage());
-        }
-
-        private void EditMenuDrinks_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuDrinksPage());
-        }
-
-        private void EditMenuAlkohols_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuAlkoholPage());
-        }
-
-        private void EditMenuAdditions_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuAdditionPage());
-        }
-
-		private void ChoosePizzeria_Click(object sender, RoutedEventArgs e)
-        {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new PizzeriaManagementPage());
         }
 
         private void DeletePizza_Click(object sender, RoutedEventArgs e)
