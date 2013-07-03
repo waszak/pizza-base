@@ -276,15 +276,8 @@ namespace Baza_pizzerii {
                 MessageBox.Show("Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników.");
                 return;
             }
-            if (App.Current.Properties["rola"].ToString() == "klient") {
-                //testowo na razie tylko wyswietlamy wszystko globalne zmienne
-                MessageBox.Show("Login: " + App.Current.Properties["login"].ToString() +
-                                "\nId_osoba: " + App.Current.Properties["id_osoba"].ToString() +
-                                "\nRola: " + App.Current.Properties["rola"].ToString() +
-                                "\nImie: " + App.Current.Properties["imie"].ToString() +
-                                "\nNazwisko: " + App.Current.Properties["nazwisko"].ToString());
-                return;
-            }
+            var userAccountWindow = new UserAccountWindow();
+            userAccountWindow.Show();
         }
 
         void Pizza_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
