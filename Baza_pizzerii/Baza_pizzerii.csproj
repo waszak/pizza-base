@@ -110,6 +110,7 @@
     <Compile Include="SearchPizzaPage.xaml.cs">
       <DependentUpon>SearchPizzaPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchPizzeriaBase.cs" />
     <Compile Include="SearchPizzeriaPage.xaml.cs">
       <DependentUpon>SearchPizzeriaPage.xaml</DependentUpon>
     </Compile>
@@ -119,6 +120,7 @@
     <Compile Include="UserManagement.xaml.cs">
       <DependentUpon>UserManagement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserReview.cs" />
     <Compile Include="Validate.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>

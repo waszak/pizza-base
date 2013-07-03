@@ -21,29 +21,37 @@ namespace Baza_pizzerii {
     public partial class PizzeriaPage : Page {
         private string pizzeria_id;
         public PizzeriaPage(string id) {
-            InitializeComponent();
             this.pizzeria_id = id;
-            IntializeLabels();
-            IntializePizzas();
-            IntializeMeals();
-            IntializeDrinks();
-            IntializeExtra();
-            IntializeAlkohol();
-            IntializeFeedback();
+            IntializeAll();
             //Pierwsza kolumna jest ukryta.
             GridView gridview = (GridView)((ListView)this.Pizza_ListView).View;
-            GridViewColumn column = gridview.Columns[0];
+            hideColumn(gridview.Columns[0]);
+
+        }
+        private void IntializeAll() {
+            InitializeComponent();
+            InitializeLabels();
+            InitializePizzas();
+            InitializeMeals();
+            InitializeDrinks();
+            InitializeExtra();
+            InitializeAlkohol();
+            InitializeFeedback();
+            //wyłączamy zakładkę z opiniami dla gościa
+            if (App.Current.Properties["rola"].ToString() == "gosc") {
+                this.tabItem69.IsEnabled = false;
+            }
+        }
+        protected void hideColumn(GridViewColumn column) {
+            column.Width = 0;
             ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
                 if (e.PropertyName == "ActualWidth") {
                     column.Width = 0;
                 }
             };
-            if (App.Current.Properties["rola"].ToString() == "gosc") {
-                //this.tabItem69.Visibility = Visibility.Hidden;
-                this.tabItem69.IsEnabled = false;
-            }
         }
-        private void Review(object sender, EventArgs args) {
+
+        protected void Review(object sender, EventArgs args) {
             if (App.Current.Properties["rola"].ToString() == "gosc") {
                 MessageBox.Show("Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników.");
                 return;
@@ -53,6 +61,7 @@ namespace Baza_pizzerii {
             this.NavigationService.RemoveBackEntry();
             this.NavigationService.Navigate(new PizzeriaPage(this.pizzeria_id));
         }
+
         public void UpdateFeedback(string id_feedback, int val) {
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "UPDATE opinia" +
@@ -66,86 +75,8 @@ namespace Baza_pizzerii {
             }
         }
 
-        class A : INotifyPropertyChanged {
-            PizzeriaPage outerClass;
-            public A(PizzeriaPage outerclass) {
-                upVoteCommand = new DelegateCommand(OnUpVoteCommand);
-                downVoteCommand = new DelegateCommand(OnDownVoteCommand);
-                this.outerClass = outerclass;
-            }
 
-            #region INotifyPropertyChanged Members
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            private void OnPropertyChanged(string propertyName) {
-                if (PropertyChanged != null) {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                }
-            }
-            #endregion
-
-            public string id_feedback {
-                get;
-                set;
-            }
-            public string feedback {
-                get;
-                set;
-            }
-            private bool assigned = false;
-            private int _grade_value;
-            public int grade_value {
-                get {
-                    return _grade_value;
-                }
-                set {
-                    int val = value;
-                    _grade_value += val;
-                    if(assigned) this.outerClass.UpdateFeedback(id_feedback, val);
-                    assigned = true;
-                    OnPropertyChanged("grade_value");
-                }
-            }
-            public int grade {
-                get;
-                set;
-            }
-
-            private ICommand _upVoteCommand;
-            private ICommand _downVoteCommand;
-            private int increase = 0;
-            public ICommand upVoteCommand {
-                get {
-                    return _upVoteCommand;
-                }
-                set {
-                    _upVoteCommand = value;
-                }
-            }
-            public ICommand downVoteCommand {
-                get {
-                    return _downVoteCommand;
-                }
-                set {
-                    _downVoteCommand = value;
-                }
-            }
-            void OnUpVoteCommand(object aParameter) {
-                if (increase < 1) {
-                    increase += 1;
-                    grade_value = 1;
-                }
-            }
-            void OnDownVoteCommand(object aParameter) {
-                if (increase > -1) {
-                    increase -= 1;
-                    grade_value = -1;
-                }
-            }
-
-        }
-        private void IntializeFeedback() {
+        private void InitializeFeedback() {
             if (App.Current.Properties["rola"].ToString() == "gosc") {
                 return;
             }
@@ -159,12 +90,12 @@ namespace Baza_pizzerii {
                 query.Prepare();
                 Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
                 while (reader.Read()) {
-                    A a = new A(this);
-                    a.id_feedback = reader.GetInt32(0).ToString();
-                    a.feedback = "Ocena: " + reader.GetInt32(5) + "\n" + reader.GetString(4)
+                    UserReview u = new UserReview(this);
+                    u.id_feedback = reader.GetInt32(0).ToString();
+                    u.feedback = "Ocena: " + reader.GetInt32(5) + "\n" + reader.GetString(4)
                         + "\nWystawił: " + reader.GetString(3);
-                    a.grade_value = (int)reader.GetFloat(6);
-                    FeedbackPizerria_ListView.Items.Add(a);
+                    u.grade_value = (int)reader.GetFloat(6);
+                    FeedbackPizerria_ListView.Items.Add(u);
                 }
 
             }
@@ -180,7 +111,7 @@ namespace Baza_pizzerii {
             query.Prepare();
         }
 
-        private void IntializeProduct(ListView list, string rodzaj) {
+        private void InitializeProduct(ListView list, string rodzaj) {
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
                 Npgsql.NpgsqlCommand query;
                 otherProductQuery(rodzaj, conn, out query);
@@ -194,20 +125,20 @@ namespace Baza_pizzerii {
             }
         }
 
-        private void IntializeAlkohol() {
-            IntializeProduct(this.Alkohol_ListView, "alkohol");
+        private void InitializeAlkohol() {
+            InitializeProduct(this.Alkohol_ListView, "alkohol");
         }
-        private void IntializeExtra() {
-            IntializeProduct(this.Extra_ListView, "dodatek");
+        private void InitializeExtra() {
+            InitializeProduct(this.Extra_ListView, "dodatek");
         }
-        private void IntializeDrinks() {
-            IntializeProduct(this.Drinks_ListView, "napoj");
+        private void InitializeDrinks() {
+            InitializeProduct(this.Drinks_ListView, "napoj");
         }
-        private void IntializeMeals() {
-            IntializeProduct(this.OtherMeals_ListView, "danie");
+        private void InitializeMeals() {
+            InitializeProduct(this.OtherMeals_ListView, "danie");
         }
 
-        private void IntializePizzas() {
+        private void InitializePizzas() {
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
 
                 string sql = "SELECT id_pizza, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', '), oferta_pizza.wielkosc, oferta_pizza.cena " +
@@ -230,7 +161,7 @@ namespace Baza_pizzerii {
             }
         }
 
-        private void IntializeLabels() {
+        private void InitializeLabels() {
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
                                     "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
@@ -283,42 +214,40 @@ namespace Baza_pizzerii {
         void Pizza_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             var item = ((FrameworkElement)e.OriginalSource).DataContext as Pizza;
             if (item != null) {
-                /*Window x = new Feedback();
-                x.ShowDialog();*/
             }
         }
-    }
-    public class Product {
-        public string name {
-            get;
-            set;
-        }
-        public float? price {
-            get;
-            set;
-        }
-    }
 
-    public class Pizza : Product {
-        public Pizza(string id_pizza, string pizza_name) {
-            this.id_pizza = id_pizza;
-            this.name = pizza_name;
-        }
-        public string id_pizza {
-            get;
-            set;
+        class Product {
+            public string name {
+                get;
+                set;
+            }
+            public float? price {
+                get;
+                set;
+            }
         }
 
-        public string pizza_ingredients {
-            get;
-            set;
-        }
-        public int? pizza_size {
-            get;
-            set;
-        }
+        class Pizza : Product {
+            public Pizza(string id_pizza, string pizza_name) {
+                this.id_pizza = id_pizza;
+                this.name = pizza_name;
+            }
+            public string id_pizza {
+                get;
+                set;
+            }
 
+            public string pizza_ingredients {
+                get;
+                set;
+            }
+            public int? pizza_size {
+                get;
+                set;
+            }
 
+        }
     }
 
 }
