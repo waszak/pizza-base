@@ -119,14 +119,14 @@
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal">
                                         <Label Content="{Binding id_pizzeria}" Visibility="Collapsed"/>
-                                        <Label Width="706" Height="75" Content="{Binding feedback}"/>
+                                        <Label Width="685" Height="75" Content="{Binding feedback}"/>
                                         <StackPanel Orientation="Vertical">
                                             <Button Name="buttonUp" Content="^" Command="{Binding upVoteCommand}" />
                                             <Label HorizontalContentAlignment="Center" Width="50" Content="{Binding grade_value,Mode=TwoWay}"/>
                                             <Button Name="buttonDown" Content="v" Command="{Binding downVoteCommand}"/>
                                         </StackPanel>
                                     </StackPanel>
-                                    <Label>-</Label>
+                                    <Label>---------------------------------------------------------</Label>
                                 </StackPanel >
                             </DataTemplate>
                         </ListView.ItemTemplate>

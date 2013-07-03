@@ -27,15 +27,11 @@ namespace Baza_pizzerii {
                 MessageBox.Show("Komentarz niemoże być pusty!");
                 return;
             }
-            int id_opinia;
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB("rejestrator", "ndijo1s81a4") ) {
-                 Npgsql.NpgsqlCommand pgCommand = new Npgsql.NpgsqlCommand("SELECT nextval('osoba_id_osoba_seq')", conn);
-                id_opinia = Convert.ToInt32(pgCommand.ExecuteScalar());
-            }
+
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
-                string sql = "INSERT into opinia values(@id_opinia, @id_pizzeria, @id_pizza, @wystawil, @komentarz, @ocena, @wartosc_oceny, @liczba_ocen);";
+                string sql = "INSERT into opinia values(nextval('osoba_id_osoba_seq'), @id_pizzeria, @id_pizza, @wystawil, @komentarz, @ocena, @wartosc_oceny, @liczba_ocen);";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
-                query.Parameters.AddWithValue("@id_opinia", id_opinia);
+               
                 query.Parameters.AddWithValue("@id_pizzeria", this.pizzeria_id);
                 query.Parameters.AddWithValue("@id_pizza", null);
                 query.Parameters.AddWithValue("@wystawil", App.Current.Properties["id_osoba"]);
