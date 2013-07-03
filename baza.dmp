@@ -49,6 +49,8 @@ DROP TABLE IF EXISTS oferta_inny_produkt CASCADE;
 DROP TABLE IF EXISTS opinia CASCADE;
 DROP TABLE IF EXISTS ocena_opinii CASCADE;
 DROP TABLE IF EXISTS laczna_ocena CASCADE;
+DROP TABLE IF EXISTS oddane_lajki CASCADE;
+
 
 DROP ROLE IF EXISTS gosc;
 DROP ROLE IF EXISTS klient;
@@ -167,6 +169,13 @@ CREATE TABLE ocena_opinii
 	CONSTRAINT ocena_opinii_unique UNIQUE (id_opinia, wystawil)
 );
 
+
+CREATE TABLE oddane_lajki
+(
+    id_opinia integer NOT NULL REFERENCES opinia (id_opinia) ON DELETE CASCADE ON UPDATE CASCADE,
+    wystawil integer REFERENCES osoba (id_osoba) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT oddane_lajki_unique UNIQUE (id_opinia, wystawil)
+);
 
 CREATE TABLE laczna_ocena
 (
