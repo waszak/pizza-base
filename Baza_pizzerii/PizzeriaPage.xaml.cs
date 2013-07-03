@@ -234,7 +234,7 @@ namespace Baza_pizzerii {
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
                                     "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
-                                    "WHERE id_pizzeria = @id;";
+                                    "WHERE id_pizzeria = @id and id_pizza IS NULL;";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
                 query.Parameters.AddWithValue("@id", this.pizzeria_id);
                 query.Prepare();

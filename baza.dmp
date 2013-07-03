@@ -548,7 +548,7 @@ GRANT SELECT ON inny_produkt TO klient;
 GRANT ALL PRIVILEGES ON opinia TO klient;
 GRANT ALL PRIVILEGES ON ocena_opinii TO klient;
 GRANT ALL PRIVILEGES ON laczna_ocena TO klient; 
-
+GRANT SELECT, USAGE	 ON opinia_id_opinia_seq TO klient;
 
 CREATE ROLE wlasciciel_pizzerii;
 GRANT SELECT, UPDATE ON osoba TO wlasciciel_pizzerii;
