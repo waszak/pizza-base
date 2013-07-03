@@ -18,30 +18,18 @@ namespace Baza_pizzerii {
     /// <summary>
     /// Interaction logic for SearchPizzaPage.xaml
     /// </summary>
-     class Ingredient {
-        public Ingredient() {
-        }
-        public bool IsSelected { get; set; }
-        public string Name { get; set; }
-  
-    }
-    public partial class SearchPizzaPage : Page {
+
+     public partial class SearchPizzaPage : SearchPizzeriaBase {
         public SearchPizzaPage() {
             InitializeComponent();
-            IntializeCity();
-            IntializeIngredients();
+            IntializeCity(this.City_comboBox);
+            IntializeIngredients(this.menuIngredients);
 
             GridView gridview = (GridView)((ListView)this.Pizza_listView).View;
-            GridViewColumn column = gridview.Columns[0];
-            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "ActualWidth") {
-                    column.Width = 0;
-                }
-            };
-            
+            hideColumn(gridview.Columns[0]);
         }
 
-        private void IntializeIngredients() {
+        protected void IntializeIngredients( MenuItem menuIngridients) {
             ObservableCollection<Ingredient> ingredients = new ObservableCollection<Ingredient>();
 
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
@@ -57,32 +45,9 @@ namespace Baza_pizzerii {
                     ingredients.Add(i);
                 }
             }
-            this.menuIngredients.ItemsSource = ingredients;
+            menuIngredients.ItemsSource = ingredients;
         }
 
-        private void IntializeCity() {
-            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
-                string sql = "SELECT DISTINCT miasto" +
-                                    " FROM pizzeria order by 1;";
-                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
-                query.Prepare();
-                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-                while (reader.Read()) {
-                    City p = new City();
-                    p.name = reader.GetString(0);
-                    this.City_comboBox.Items.Add(p);
-                }
-            }
-        }
-        private void myAccount_Click(object sender, RoutedEventArgs e) {
-            if (App.Current.Properties["rola"].ToString() == "gosc")
-            {
-                MessageBox.Show("Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników.");
-                return;
-            }
-            var userAccountWindow = new UserAccountWindow();
-            userAccountWindow.Show();
-        }
 
         private void searchPizza_Click(object sender, RoutedEventArgs e) {
             this.Pizza_listView.Items.Clear();
@@ -123,48 +88,17 @@ namespace Baza_pizzerii {
         }
 
         private bool matchIngridients(string ingridients) {
- 
             foreach (object item in menuIngredients.Items) {
                 if (((Ingredient)item).IsSelected) {
                     if (!ingridients.Contains(((Ingredient)item).Name)) return false;
                 }
-
             }
             return true;
         }
-        private void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new SearchPizzeriaPage());
-        }
 
-        private void searchPizzaPage_Click(object sender, RoutedEventArgs e) {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new SearchPizzaPage());
-        }
-
-        private void logout_Click(object sender, RoutedEventArgs e) {
-            this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new LoginPage());
-        }
-
-        private void selectPizza(object sender, MouseButtonEventArgs e) {
-            var item = ((FrameworkElement)e.OriginalSource).DataContext as PizzeriaPizza;
-            if (item != null) {
-                this.NavigationService.RemoveBackEntry();
-                this.NavigationService.Navigate(new PizzeriaPage(item.Id));
-            }
-        }
-
-        class PizzeriaPizza {
-            public string Id {
-                get;
-                set;
-            }
+        class PizzeriaPizza:Pizzeria {
+        
             public string ingridients {
-                get;
-                set;
-            }
-            public string name {
                 get;
                 set;
             }
@@ -172,24 +106,12 @@ namespace Baza_pizzerii {
                 get;
                 set;
             }
-            public string city {
-                get;
-                set;
-            }
-            public string adress {
-                get;
-                set;
-            }
-        }
-    
-
-        class City {
-
-            public string name {
-                get;
-                set;
-            }
+       
         }
 
+        class Ingredient {
+            public bool IsSelected { get; set; }
+            public string Name { get; set; }
+        }
     }
 }

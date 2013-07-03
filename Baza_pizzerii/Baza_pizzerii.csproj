@@ -110,6 +110,7 @@
     <Compile Include="SearchPizzaPage.xaml.cs">
       <DependentUpon>SearchPizzaPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchPizzeriaBase.cs" />
     <Compile Include="SearchPizzeriaPage.xaml.cs">
       <DependentUpon>SearchPizzeriaPage.xaml</DependentUpon>
     </Compile>
