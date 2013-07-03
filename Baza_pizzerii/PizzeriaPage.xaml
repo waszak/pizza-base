@@ -26,7 +26,7 @@
         <Label Canvas.Left="12" Canvas.Top="95" Content="Telefon" FontSize="14" Foreground="White" Height="28" Name="label3" FontWeight="ExtraBold"/>
         <Label Canvas.Left="12" Canvas.Top="129" Content="WWW" FontSize="14" Foreground="White" Height="28" Name="label5" FontWeight="ExtraBold"/>
         <Label Canvas.Left="12" Canvas.Top="163" Content="Ocena"  FontSize="14" Foreground="White" Height="28" Name="label4" FontWeight="ExtraBold" />
-        <TabControl Canvas.Left="12" Canvas.Top="228" Height="345" Name="tabControl1" Width="776">
+        <TabControl Canvas.Left="12" Canvas.Top="228" Height="335" Name="tabControl1" Width="776">
             <TabItem Header="Pizze" Name="tabItem1">
                 <Grid >
                     <ListView Name="Pizza_ListView" MouseDoubleClick="Pizza_MouseDoubleClick" >
@@ -96,7 +96,7 @@
                     <Label Content="Opinie"  />
                 </TabItem.Header>
                 <Grid >
-                    <ListView Name="FeedbackPizerria_ListView" Height="318" VerticalAlignment="Top">
+                    <ListView Name="FeedbackPizerria_ListView" Margin="0,0,0,6">
                         
                        <!--  <ListViewItem>
                             <StackPanel Orientation="Vertical">

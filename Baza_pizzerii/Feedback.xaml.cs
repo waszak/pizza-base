@@ -29,7 +29,7 @@ namespace Baza_pizzerii {
             }
 
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
-                string sql = "INSERT into opinia values(nextval('osoba_id_osoba_seq'), @id_pizzeria, @id_pizza, @wystawil, @komentarz, @ocena, @wartosc_oceny, @liczba_ocen);";
+                string sql = "INSERT into opinia values(nextval('opinia_id_opinia_seq'), @id_pizzeria, @id_pizza, @wystawil, @komentarz, @ocena, @wartosc_oceny, @liczba_ocen);";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
                
                 query.Parameters.AddWithValue("@id_pizzeria", this.pizzeria_id);
