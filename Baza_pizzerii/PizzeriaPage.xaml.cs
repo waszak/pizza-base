@@ -38,14 +38,40 @@ namespace Baza_pizzerii {
                     column.Width = 0;
                 }
             };
+            if (App.Current.Properties["rola"].ToString() == "gosc") {
+                //this.tabItem69.Visibility = Visibility.Hidden;
+                this.tabItem69.IsEnabled = false;
+            }
+        }
+        private void Review(object sender, EventArgs args) {
+            if (App.Current.Properties["rola"].ToString() == "gosc") {
+                MessageBox.Show("Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników.");
+                return;
+            }
+            Window x = new Feedback(this.pizzeria_id);
+            x.ShowDialog();
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new PizzeriaPage(this.pizzeria_id));
+        }
+        public void UpdateFeedback(string id_feedback, int val) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
+                string sql = "UPDATE opinia" +
+                                " SET wartosc_oceny = wartosc_oceny+@inc" +
+                                " WHERE id_opinia = @id;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@id", id_feedback);
+                query.Parameters.AddWithValue("@inc", (float)val);
+                query.Prepare();
+                query.ExecuteNonQuery();
+            }
         }
 
-        class A :INotifyPropertyChanged{
-         //   PizzeriaPage outerClass;
-            public A(/*PizzeriaPage outerclass*/) {
+        class A : INotifyPropertyChanged {
+            PizzeriaPage outerClass;
+            public A(PizzeriaPage outerclass) {
                 upVoteCommand = new DelegateCommand(OnUpVoteCommand);
                 downVoteCommand = new DelegateCommand(OnDownVoteCommand);
-                /*this.outerClass = outerclass;*/
+                this.outerClass = outerclass;
             }
 
             #region INotifyPropertyChanged Members
@@ -59,23 +85,36 @@ namespace Baza_pizzerii {
             }
             #endregion
 
+            public string id_feedback {
+                get;
+                set;
+            }
             public string feedback {
                 get;
                 set;
             }
-            private int _grade;
-            public int grade {
+            private bool assigned = false;
+            private int _grade_value;
+            public int grade_value {
                 get {
-                    return _grade;
+                    return _grade_value;
                 }
                 set {
-                    _grade = value;
-                    OnPropertyChanged("grade");
+                    int val = value;
+                    _grade_value += val;
+                    if(assigned) this.outerClass.UpdateFeedback(id_feedback, val);
+                    assigned = true;
+                    OnPropertyChanged("grade_value");
                 }
+            }
+            public int grade {
+                get;
+                set;
             }
 
             private ICommand _upVoteCommand;
             private ICommand _downVoteCommand;
+            private int increase = 0;
             public ICommand upVoteCommand {
                 get {
                     return _upVoteCommand;
@@ -93,19 +132,42 @@ namespace Baza_pizzerii {
                 }
             }
             void OnUpVoteCommand(object aParameter) {
-                grade=1;
+                if (increase < 1) {
+                    increase += 1;
+                    grade_value = 1;
+                }
             }
             void OnDownVoteCommand(object aParameter) {
-                grade=-1;
+                if (increase > -1) {
+                    increase -= 1;
+                    grade_value = -1;
+                }
             }
 
         }
-        private void IntializeFeedback(){
-            A a = new A(); A b = new A();
-            a.feedback = "kupa";
-            b.feedback = "zajebiste";
-            FeedbackPizerria_ListView.Items.Add(a);
-            FeedbackPizerria_ListView.Items.Add(b);
+        private void IntializeFeedback() {
+            if (App.Current.Properties["rola"].ToString() == "gosc") {
+                return;
+            }
+            FeedbackPizerria_ListView.Items.Clear();
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
+                string sql = "SELECT id_opinia, id_pizzeria, id_pizza, imie||' '||nazwisko, komentarz, ocena, wartosc_oceny" +
+                                        " FROM opinia join osoba on(wystawil=id_osoba)"
+                                        + " WHERE id_pizzeria = @id;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                query.Parameters.AddWithValue("@id", this.pizzeria_id);
+                query.Prepare();
+                Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    A a = new A(this);
+                    a.id_feedback = reader.GetInt32(0).ToString();
+                    a.feedback = "Ocena: " + reader.GetInt32(5) + "\n" + reader.GetString(4)
+                        + "\nWystawił: " + reader.GetString(3);
+                    a.grade_value = (int)reader.GetFloat(6);
+                    FeedbackPizerria_ListView.Items.Add(a);
+                }
+
+            }
         }
         private void otherProductQuery(string rodzaj, Npgsql.NpgsqlConnection conn, out Npgsql.NpgsqlCommand query) {
             string sql = "SELECT inny_produkt.nazwa, cena" +
@@ -146,7 +208,7 @@ namespace Baza_pizzerii {
         }
 
         private void IntializePizzas() {
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
 
                 string sql = "SELECT id_pizza, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', '), oferta_pizza.wielkosc, oferta_pizza.cena " +
                                     "FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" +
@@ -169,7 +231,7 @@ namespace Baza_pizzerii {
         }
 
         private void IntializeLabels() {
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT id_pizzeria, nazwa, miasto, ulica, telefon, www, ocena, liczba_ocen " +
                                     "FROM pizzeria join laczna_ocena using(id_pizzeria) " +
                                     "WHERE id_pizzeria = @id;";
@@ -228,8 +290,8 @@ namespace Baza_pizzerii {
         void Pizza_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             var item = ((FrameworkElement)e.OriginalSource).DataContext as Pizza;
             if (item != null) {
-                Window x = new Feedback();
-                x.ShowDialog();
+                /*Window x = new Feedback();
+                x.ShowDialog();*/
             }
         }
     }

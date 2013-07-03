@@ -16,5 +16,8 @@ namespace Baza_pizzerii
             conn.Open();
             return conn;
         }
+        public static NpgsqlConnection loginAppUserToDB() {
+            return DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"]);
+        }
     }
 }

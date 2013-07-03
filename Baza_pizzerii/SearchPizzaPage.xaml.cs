@@ -43,8 +43,8 @@ namespace Baza_pizzerii {
 
         private void IntializeIngredients() {
             ObservableCollection<Ingredient> ingredients = new ObservableCollection<Ingredient>();
-            
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT DISTINCT nazwa" +
                                     " FROM skladnik order by 1;";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
@@ -61,7 +61,7 @@ namespace Baza_pizzerii {
         }
 
         private void IntializeCity() {
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT DISTINCT miasto" +
                                     " FROM pizzeria order by 1;";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
@@ -86,7 +86,7 @@ namespace Baza_pizzerii {
 
         private void searchPizza_Click(object sender, RoutedEventArgs e) {
             this.Pizza_listView.Items.Clear();
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 if (pizzeriaAddress_TextBox.Text.Trim() == "Wprowadź adres pizzerii") pizzeriaAddress_TextBox.Text = "";
                 string sql = "SELECT distinct id_pizzeria, pizzeria.nazwa, miasto, ulica, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', ')" +
                                     " FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" +

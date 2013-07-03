@@ -26,7 +26,7 @@
         <Label Canvas.Left="12" Canvas.Top="95" Content="Telefon" FontSize="14" Foreground="White" Height="28" Name="label3" FontWeight="ExtraBold"/>
         <Label Canvas.Left="12" Canvas.Top="129" Content="WWW" FontSize="14" Foreground="White" Height="28" Name="label5" FontWeight="ExtraBold"/>
         <Label Canvas.Left="12" Canvas.Top="163" Content="Ocena"  FontSize="14" Foreground="White" Height="28" Name="label4" FontWeight="ExtraBold" />
-        <TabControl Canvas.Left="12" Canvas.Top="228" Height="360" Name="tabControl1" Width="776">
+        <TabControl Canvas.Left="12" Canvas.Top="228" Height="345" Name="tabControl1" Width="776">
             <TabItem Header="Pizze" Name="tabItem1">
                 <Grid >
                     <ListView Name="Pizza_ListView" MouseDoubleClick="Pizza_MouseDoubleClick" >
@@ -90,9 +90,13 @@
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Opinie" Name="tabItem4">
+            <TabItem  Name="tabItem69">
+                <TabItem.Header>
+                    <!--MouseLeftButtonDown="FeedbackClicked-->
+                    <Label Content="Opinie"  />
+                </TabItem.Header>
                 <Grid >
-                    <ListView Name="FeedbackPizerria_ListView"  >
+                    <ListView Name="FeedbackPizerria_ListView" Height="318" VerticalAlignment="Top">
                         
                        <!--  <ListViewItem>
                             <StackPanel Orientation="Vertical">
@@ -114,10 +118,11 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding id_pizzeria}" Visibility="Collapsed"/>
                                         <Label Width="706" Height="75" Content="{Binding feedback}"/>
                                         <StackPanel Orientation="Vertical">
                                             <Button Name="buttonUp" Content="^" Command="{Binding upVoteCommand}" />
-                                            <Label HorizontalContentAlignment="Center" Width="50" Content="{Binding grade,Mode=TwoWay}"/>
+                                            <Label HorizontalContentAlignment="Center" Width="50" Content="{Binding grade_value,Mode=TwoWay}"/>
                                             <Button Name="buttonDown" Content="v" Command="{Binding downVoteCommand}"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -134,5 +139,6 @@
         <Label Canvas.Left="75" Canvas.Top="95" Content="Nazwa" FontSize="14" Foreground="White" Height="28" Name="phone_label" FontWeight="ExtraBold"/>
         <Label Canvas.Left="75" Canvas.Top="163" Content="Nazwa" FontSize="14" Foreground="White" Height="28" Name="grade_label" FontWeight="ExtraBold"/>
         <Label Canvas.Left="75" Canvas.Top="129" Content="Nazwa" FontSize="14" Foreground="White" Height="28" Name="www_label" FontWeight="ExtraBold"/>
+        <Button Canvas.Left="712" Canvas.Top="12" Content="Oceń" Height="23" Name="button1" Width="75" Click="Review" />
     </Canvas>
 </Page>

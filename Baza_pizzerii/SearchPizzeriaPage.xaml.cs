@@ -34,7 +34,7 @@ namespace Baza_pizzerii {
         }
 
         private void IntializeCity() {
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT DISTINCT miasto" +
                                     " FROM pizzeria order by 1;";
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
@@ -75,7 +75,7 @@ namespace Baza_pizzerii {
 
         private void searchPizzeria_Click(object sender, RoutedEventArgs e) {
             this.Pizzeria_listView.Items.Clear();
-            using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
+            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 if (pizzeriaAddress_TextBox.Text.Trim() == "Wprowadź adres pizzerii") pizzeriaAddress_TextBox.Text = "";
                 string sql = "SELECT id_pizzeria, nazwa, miasto, ulica" +
                                     " FROM pizzeria" +
