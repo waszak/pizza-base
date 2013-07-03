@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Baza_pizzerii {
-    public partial class SearchPizzeriaBase:Page {
+    public partial class SearchPizzeriaBase : Page {
 
         protected void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
             this.NavigationService.RemoveBackEntry();
@@ -43,7 +43,7 @@ namespace Baza_pizzerii {
             };
         }
 
-        protected void IntializeCity(ComboBox City_comboBox) {
+        protected void InitializeCity(ComboBox City_comboBox) {
             ObservableCollection<City> cities = new ObservableCollection<City>();
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT DISTINCT miasto" +
