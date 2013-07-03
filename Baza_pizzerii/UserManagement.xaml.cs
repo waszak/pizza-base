@@ -37,6 +37,8 @@ namespace Baza_pizzerii
             public string Adres { get; set; }
             public string Mail { get; set; }
             public string Telefon { get; set; }
+            public string LiczbaPizzerii { get; set; }
+
         }
 
         public UserManagement()
@@ -48,8 +50,9 @@ namespace Baza_pizzerii
         private void InitializeData()
         {
             NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
-            NpgsqlCommand cmd = new NpgsqlCommand(  "SELECT uzytkownik.id_osoba, login, rola, imie, nazwisko, adres, mail, telefon "+
-                                                    "FROM uzytkownik LEFT JOIN osoba USING (id_osoba);", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand(  "SELECT u.id_osoba, u.login, u.rola, o.imie, o.nazwisko, o.adres, o.mail, o.telefon, COUNT(p.id_pizzeria) "+
+                                                    "FROM uzytkownik u LEFT JOIN osoba o USING (id_osoba) LEFT JOIN pizzeria p ON (u.id_osoba = p.wlasciciel) "+
+                                                    "GROUP BY u.id_osoba, u.login, u.rola, o.imie, o.nazwisko, o.adres, o.mail, o.telefon;", conn);
 
             NpgsqlDataReader dr;
             try
@@ -79,7 +82,8 @@ namespace Baza_pizzerii
                                             Nazwisko= dr[4].ToString(),
                                             Adres   = dr[5].ToString(), 
                                             Mail    = dr[6].ToString(), 
-                                            Telefon = dr[7].ToString() 
+                                            Telefon = dr[7].ToString(),
+                                            LiczbaPizzerii = dr[2].ToString() == "wlasciciel_pizzerii" ? dr[8].ToString() : "-"
                                          });
             }
 

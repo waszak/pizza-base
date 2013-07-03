@@ -39,6 +39,8 @@
                             DisplayMemberBinding="{Binding Path=Mail}" />
                         <GridViewColumn Header="Telefon"
                             DisplayMemberBinding="{Binding Path=Telefon}" />
+                        <GridViewColumn Header="Liczba pizzerii"
+                            DisplayMemberBinding="{Binding Path=LiczbaPizzerii}" />
                     </GridView>
                 </ListView.View>
             </ListView>
