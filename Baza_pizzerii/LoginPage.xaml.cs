@@ -39,14 +39,14 @@ namespace Baza_pizzerii {
             }
 
             try {
-                NpgsqlConnection conn = DB.loginUserToDB(login_tb.Text, password_pb.Password);
+                NpgsqlConnection conn = DB.loginUserToDB(login_tb.Text.ToLower(), password_pb.Password);
                 string sql =    "SELECT id_osoba, rola " +
                                 "FROM uzytkownik LEFT JOIN osoba USING (id_osoba) " +
                                 "WHERE login = @login;";
 
                 NpgsqlCommand command = new NpgsqlCommand(null, conn);
                 command.CommandText = sql;
-                command.Parameters.AddWithValue("@login", login_tb.Text);
+                command.Parameters.AddWithValue("@login", login_tb.Text.ToLower());
                 command.Prepare();
                 NpgsqlDataReader dr = command.ExecuteReader();
                 if (dr.Read() == false) {
@@ -55,7 +55,7 @@ namespace Baza_pizzerii {
                     return;
                 }
                 //przechoujemy potrzebne informacje w zmiennych globalnych całej aplikacji
-                App.Current.Properties["login"] = login_tb.Text;
+                App.Current.Properties["login"] = login_tb.Text.ToLower();
                 App.Current.Properties["password"] = password_pb.Password;
                 App.Current.Properties["id_osoba"] = dr[0];
                 App.Current.Properties["rola"] = dr[1];

@@ -90,7 +90,7 @@ namespace Baza_pizzerii {
             NpgsqlConnection pgConnection = DB.loginUserToDB("rejestrator", "ndijo1s81a4");
             try {
                 NpgsqlCommand pgCommand = new NpgsqlCommand("SELECT * FROM uzytkownik WHERE login = @login;", pgConnection);
-                pgCommand.Parameters.AddWithValue("@login", login_tb.Text);
+                pgCommand.Parameters.AddWithValue("@login", login_tb.Text.ToLower());
                 if (pgCommand.ExecuteReader().Read() == true) {
                     MessageBox.Show("Użytkownik o podanym loginie już istnieje!");
                     pgConnection.Close();
@@ -111,7 +111,7 @@ namespace Baza_pizzerii {
                         // przygotowanie danych do wprowadzenia do bazy
                         pgCommand.Parameters.AddWithValue("@rola", rola_cb.Text == "Klient" ? "klient" : "wlasciciel_pizzerii");
                         pgCommand.Parameters.AddWithValue("@id", id);
-                        pgCommand.Parameters.AddWithValue("@uzytkownik", login_tb.Text);
+                        pgCommand.Parameters.AddWithValue("@uzytkownik", login_tb.Text.ToLower());
                         pgCommand.Parameters.AddWithValue("@imie", imie_tb.Text);
                         pgCommand.Parameters.AddWithValue("@nazwisko", nazwisko_tb.Text);
                         pgCommand.Parameters.AddWithValue("@email", email_tb.Text);
@@ -120,7 +120,7 @@ namespace Baza_pizzerii {
 
                         pgCommand.ExecuteNonQuery();
 
-                        pgCommand = new NpgsqlCommand("CREATE USER " + login_tb.Text +
+                        pgCommand = new NpgsqlCommand("CREATE USER " + login_tb.Text.ToLower() +
                                 " IN GROUP " + (rola_cb.Text == "Klient" ? "klient" : "wlasciciel_pizzerii") +
                                 " PASSWORD '" + password1_pb.Password + "';",
                                 pgConnection, pgTransaction);
