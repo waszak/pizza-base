@@ -88,13 +88,13 @@ namespace Baza_pizzerii {
             this.Pizza_listView.Items.Clear();
             using (Npgsql.NpgsqlConnection conn = DB.loginUserToDB((string)App.Current.Properties["login"], (string)App.Current.Properties["password"])) {
                 if (pizzeriaAddress_TextBox.Text.Trim() == "Wprowadź adres pizzerii") pizzeriaAddress_TextBox.Text = "";
-                string sql = "SELECT id_pizzeria, pizzeria.nazwa, miasto, ulica, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', ')" +
+                string sql = "SELECT distinct id_pizzeria, pizzeria.nazwa, miasto, ulica, pizza.nazwa, array_to_string(array_agg(skladnik.nazwa), ', ')" +
                                     " FROM pizzeria join oferta_pizza using(id_pizzeria) join pizza using(id_pizza)" +
                                                     "join sklad using(id_pizza) join skladnik using(id_skladnik)" +
                                     " WHERE " + (pizzeriaAddress_TextBox.Text.Trim() != ""
                                                         ? "(miasto like @miasto and (ulica like @ulicaFormat1 or ulica like @ulicaFormat2))"
                                                         : "miasto like @miasto") +
-                                    " GROUP BY id_pizzeria, pizzeria.nazwa, miasto, ulica, pizza.nazwa ORDER BY pizza.nazwa,ulica;";
+                                    " GROUP BY id_pizzeria, pizzeria.nazwa, miasto, ulica, pizza.nazwa, id_oferta_pizza ORDER BY pizza.nazwa,ulica;";
 
                 Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
                 query.Parameters.AddWithValue("@miasto", City_comboBox.Text);

@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace Baza_pizzerii {
     /// <summary>
@@ -28,6 +29,7 @@ namespace Baza_pizzerii {
             IntializeDrinks();
             IntializeExtra();
             IntializeAlkohol();
+            IntializeFeedback();
             //Pierwsza kolumna jest ukryta.
             GridView gridview = (GridView)((ListView)this.Pizza_ListView).View;
             GridViewColumn column = gridview.Columns[0];
@@ -36,9 +38,75 @@ namespace Baza_pizzerii {
                     column.Width = 0;
                 }
             };
-
         }
 
+        class A :INotifyPropertyChanged{
+         //   PizzeriaPage outerClass;
+            public A(/*PizzeriaPage outerclass*/) {
+                upVoteCommand = new DelegateCommand(OnUpVoteCommand);
+                downVoteCommand = new DelegateCommand(OnDownVoteCommand);
+                /*this.outerClass = outerclass;*/
+            }
+
+            #region INotifyPropertyChanged Members
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            private void OnPropertyChanged(string propertyName) {
+                if (PropertyChanged != null) {
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                }
+            }
+            #endregion
+
+            public string feedback {
+                get;
+                set;
+            }
+            private int _grade;
+            public int grade {
+                get {
+                    return _grade;
+                }
+                set {
+                    _grade = value;
+                    OnPropertyChanged("grade");
+                }
+            }
+
+            private ICommand _upVoteCommand;
+            private ICommand _downVoteCommand;
+            public ICommand upVoteCommand {
+                get {
+                    return _upVoteCommand;
+                }
+                set {
+                    _upVoteCommand = value;
+                }
+            }
+            public ICommand downVoteCommand {
+                get {
+                    return _downVoteCommand;
+                }
+                set {
+                    _downVoteCommand = value;
+                }
+            }
+            void OnUpVoteCommand(object aParameter) {
+                grade=1;
+            }
+            void OnDownVoteCommand(object aParameter) {
+                grade=-1;
+            }
+
+        }
+        private void IntializeFeedback(){
+            A a = new A(); A b = new A();
+            a.feedback = "kupa";
+            b.feedback = "zajebiste";
+            FeedbackPizerria_ListView.Items.Add(a);
+            FeedbackPizerria_ListView.Items.Add(b);
+        }
         private void otherProductQuery(string rodzaj, Npgsql.NpgsqlConnection conn, out Npgsql.NpgsqlCommand query) {
             string sql = "SELECT inny_produkt.nazwa, cena" +
                                    " FROM pizzeria join oferta_inny_produkt using(id_pizzeria) join inny_produkt using(id_produkt)" +

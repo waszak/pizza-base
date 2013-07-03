@@ -83,7 +83,7 @@
                     <ListView Name="Alkohol_ListView"  >
                         <ListView.View >
                             <GridView >
-                                <GridViewColumn Header="Nazwa" DisplayMemberBinding="{Binding Path=name}"/>
+                                <GridViewColumn Header="Nazwa" DisplayMemberBinding="{Binding Path=name}" />
                                 <GridViewColumn Header="Cena" DisplayMemberBinding="{Binding Path=price}" />
                             </GridView>
                         </ListView.View>
@@ -91,7 +91,42 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Opinie" Name="tabItem4">
-                <Grid />
+                <Grid >
+                    <ListView Name="FeedbackPizerria_ListView"  >
+                        
+                       <!--  <ListViewItem>
+                            <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Width="706" Height="75">
+                                    Opinia
+                                </Label>
+                                <StackPanel Orientation="Vertical">
+                                    <Button Name="buttonUp" Content="^"  />
+                                    <Label HorizontalContentAlignment="Center" Width="50">5</Label>
+                                    <Button Name="buttonDown" Content="v" />
+                                </StackPanel>
+                            </StackPanel>
+                                <Label>-</Label>
+                            </StackPanel >
+                        </ListViewItem>-->
+                       
+                       <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Width="706" Height="75" Content="{Binding feedback}"/>
+                                        <StackPanel Orientation="Vertical">
+                                            <Button Name="buttonUp" Content="^" Command="{Binding upVoteCommand}" />
+                                            <Label HorizontalContentAlignment="Center" Width="50" Content="{Binding grade,Mode=TwoWay}"/>
+                                            <Button Name="buttonDown" Content="v" Command="{Binding downVoteCommand}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Label>-</Label>
+                                </StackPanel >
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>                
+                </Grid>
             </TabItem>
         </TabControl>
         <Label Canvas.Left="75" Canvas.Top="27" Content="Nazwa" FontSize="14" Foreground="White" Height="28" Name="name_label" FontWeight="ExtraBold"/>
