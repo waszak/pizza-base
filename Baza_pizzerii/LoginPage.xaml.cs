@@ -40,8 +40,8 @@ namespace Baza_pizzerii {
 
             try {
                 NpgsqlConnection conn = DB.loginUserToDB(login_tb.Text, password_pb.Password);
-                string sql = "SELECT id_osoba, rola " +
-                                "FROM uzytkownik JOIN osoba USING (id_osoba) " +
+                string sql =    "SELECT id_osoba, rola " +
+                                "FROM uzytkownik LEFT JOIN osoba USING (id_osoba) " +
                                 "WHERE login = @login;";
 
                 NpgsqlCommand command = new NpgsqlCommand(null, conn);
@@ -61,10 +61,21 @@ namespace Baza_pizzerii {
                 App.Current.Properties["rola"] = dr[1];
 
                 conn.Close();
-                if (App.Current.Properties["rola"].ToString() == "wlasciciel_pizzerii") {
+                if (App.Current.Properties["rola"].ToString() == "wlasciciel_pizzerii") 
+                {
                     openPizzeriaManagementWindow();
                 }
-                else {              
+                else if (App.Current.Properties["rola"].ToString() == "admin")
+                {
+                    openAdminManagementWindow();
+                }
+                else if (App.Current.Properties["rola"].ToString() == "pomocnicze")
+                {
+                    MessageBox.Show("Nie można zalogowac się na konto pomocznicze!");
+                    return;
+                }
+                else
+                {
                     openSearchPizzeriaWindow();
                 }
             } catch (Exception msg) {
@@ -83,6 +94,12 @@ namespace Baza_pizzerii {
             this.NavigationService.Navigate(new PizzeriaManagementPage());
         }
 
+        private void openAdminManagementWindow()
+        {
+            this.NavigationService.Navigate(new UserManagement());
+        }
+
+        
 
         private void LogInAsGuest_click(object sender, RoutedEventArgs e) {
             try {

@@ -197,7 +197,7 @@ namespace Baza_pizzerii
         private void CreateNewPizza_Click(object sender, RoutedEventArgs e)
         {
             this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new EditMenuPizzaPage());
+            this.NavigationService.Navigate(new CreatePizzaPage());
         }
         
     }

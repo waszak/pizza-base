@@ -77,7 +77,7 @@ CREATE TABLE uzytkownik
 (	
     id_osoba integer NOT NULL REFERENCES osoba (id_osoba) ON DELETE CASCADE ON UPDATE CASCADE,
 	login text NOT NULL CHECK (length(login) <= 25),
-	rola text NOT NULL CHECK (rola IN ('klient', 'wlasciciel_pizzerii', 'gosc', 'pomocnicze'))	
+	rola text NOT NULL CHECK (rola IN ('klient', 'wlasciciel_pizzerii', 'gosc', 'pomocnicze', 'admin'))	
 );
 
 CREATE TABLE pizzeria 
@@ -557,6 +557,7 @@ GRANT ALL PRIVILEGES ON laczna_ocena TO wlasciciel_pizzerii;
 GRANT SELECT, USAGE	 ON pizzeria_id_pizzeria_seq TO wlasciciel_pizzerii;
 GRANT SELECT, USAGE	 ON oferta_inny_produkt_id_oferta_inny_produkt_seq TO wlasciciel_pizzerii;
 GRANT SELECT, USAGE	 ON oferta_pizza_id_oferta_pizza_seq TO wlasciciel_pizzerii;
+GRANT SELECT, USAGE	 ON pizza_id_pizza_seq TO wlasciciel_pizzerii;
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -575,9 +576,10 @@ INSERT INTO uzytkownik VALUES (1, 'rejestrator', 'pomocnicze');
 CREATE USER gosc_konto IN GROUP gosc PASSWORD 'gosc_haslo';
 INSERT INTO osoba VALUES (2,'gosc_konto', 'gosc_konto', NULL, NULL, NULL);
 INSERT INTO uzytkownik VALUES (2, 'gosc_konto', 'gosc');
-INSERT INTO uzytkownik VALUES (2, 'gosc', 'gosc');
+INSERT INTO osoba VALUES (3,'gosc_konto', 'gosc_konto', NULL, NULL, NULL);
+INSERT INTO uzytkownik VALUES (3, 'gosc', 'gosc');
 
-INSERT INTO osoba VALUES (3,'postgres', 'postgres', NULL, NULL, NULL);
-INSERT INTO uzytkownik VALUES (3, 'postgres', 'pomocnicze');
+INSERT INTO osoba VALUES (4,'postgres', 'postgres', NULL, NULL, NULL);
+INSERT INTO uzytkownik VALUES (4, 'postgres', 'admin');
 
 SELECT setval('osoba_id_osoba_seq', 10);

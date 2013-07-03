@@ -52,7 +52,7 @@
                             <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
                            Width="20" />
                             <TextBlock Text="{Binding Name}"
-                           Width="60" />
+                           Width="120" />
                         </StackPanel>
                     </DataTemplate>
                 </MenuItem.ItemTemplate>
