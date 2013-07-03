@@ -10,61 +10,64 @@ using System.Windows.Input;
 namespace Baza_pizzerii {
     public partial class SearchPizzeriaBase : Page {
 
-        protected void searchPizzeriaPage_Click(object sender, RoutedEventArgs e) {
+        protected void searchPizzeriaPage_Click ( object sender, RoutedEventArgs e ) {
             this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new SearchPizzeriaPage());
+            this.NavigationService.Navigate ( new SearchPizzeriaPage() );
         }
 
-        protected void searchPizzaPage_Click(object sender, RoutedEventArgs e) {
+        protected void searchPizzaPage_Click ( object sender, RoutedEventArgs e ) {
             this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new SearchPizzaPage());
+            this.NavigationService.Navigate ( new SearchPizzaPage() );
         }
 
-        protected void logout_Click(object sender, RoutedEventArgs e) {
+        protected void logout_Click ( object sender, RoutedEventArgs e ) {
             this.NavigationService.RemoveBackEntry();
-            this.NavigationService.Navigate(new LoginPage());
+            this.NavigationService.Navigate ( new LoginPage() );
         }
 
-        protected void myAccount_Click(object sender, RoutedEventArgs e) {
-            if (App.Current.Properties["rola"].ToString() == "gosc") {
-                MessageBox.Show("Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników.");
+        protected void myAccount_Click ( object sender, RoutedEventArgs e ) {
+            if ( App.Current.Properties["rola"].ToString() == "gosc" ) {
+                MessageBox.Show ( "Korzystasz z aplikacji jako gość.\nFunkcjonalność dostępna dla zalogowanych użytkowników." );
                 return;
             }
+
             var userAccountWindow = new UserAccountWindow();
             userAccountWindow.Show();
         }
 
-        protected void hideColumn(GridViewColumn column) {
+        protected void hideColumn ( GridViewColumn column ) {
             column.Width = 0;
-            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "ActualWidth") {
+            ( ( System.ComponentModel.INotifyPropertyChanged ) column ).PropertyChanged += ( sender, e ) => {
+                if ( e.PropertyName == "ActualWidth" ) {
                     column.Width = 0;
                 }
             };
         }
 
-        protected void InitializeCity(ComboBox City_comboBox) {
+        protected void InitializeCity ( ComboBox City_comboBox ) {
             ObservableCollection<City> cities = new ObservableCollection<City>();
-            using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
+            using ( Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB() ) {
                 string sql = "SELECT DISTINCT miasto" +
-                                    " FROM pizzeria order by 1;";
-                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand(sql, conn);
+                             " FROM pizzeria order by 1;";
+                Npgsql.NpgsqlCommand query = new Npgsql.NpgsqlCommand ( sql, conn );
                 query.Prepare();
                 Npgsql.NpgsqlDataReader reader = query.ExecuteReader();
-                while (reader.Read()) {
+
+                while ( reader.Read() ) {
                     City p = new City();
-                    p.name = reader.GetString(0);
-                    cities.Add(p);
+                    p.name = reader.GetString ( 0 );
+                    cities.Add ( p );
                 }
             }
             City_comboBox.ItemsSource = cities;
         }
 
-        protected void select(object sender, MouseButtonEventArgs e) {
-            var item = ((FrameworkElement)e.OriginalSource).DataContext as Pizzeria;
-            if (item != null) {
+        protected void select ( object sender, MouseButtonEventArgs e ) {
+            var item = ( ( FrameworkElement ) e.OriginalSource ).DataContext as Pizzeria;
+
+            if ( item != null ) {
                 this.NavigationService.RemoveBackEntry();
-                this.NavigationService.Navigate(new PizzeriaPage(item.Id));
+                this.NavigationService.Navigate ( new PizzeriaPage ( item.Id ) );
             }
         }
 
