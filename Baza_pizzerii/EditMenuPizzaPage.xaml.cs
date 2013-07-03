@@ -36,7 +36,7 @@ namespace Baza_pizzerii
                                                                 "pizza.nazwa AS nazwa_pizzy, "+
                                                                 "array_to_string(array_agg(skladnik.nazwa), ', ') AS skladniki "+
                                                                 "FROM pizza JOIN sklad USING (id_pizza) JOIN skladnik USING (id_skladnik) "+
-                                                                "GROUP BY pizza.nazwa, pizza.id_pizza",
+                                                                "GROUP BY pizza.nazwa, pizza.id_pizza ORDER BY 2;",
                                                                 conn);
             DataSet ds1 = new DataSet();
             pgDataAdapter1.Fill(ds1);
@@ -50,7 +50,7 @@ namespace Baza_pizzerii
                                                                 "oferta_pizza.wielkosc AS wielkosc_pizzy "+
                                                                 "FROM oferta_pizza JOIN pizza using (id_pizza) JOIN sklad USING (id_pizza) JOIN skladnik USING (id_skladnik) " +
                                                                 "GROUP BY id_pizzeria, pizza.nazwa, pizza.id_pizza, oferta_pizza.cena, oferta_pizza.wielkosc " +
-                                                                "HAVING id_pizzeria = "+ App.Current.Properties["id_pizzeria"].ToString(),
+                                                                "HAVING id_pizzeria = "+ App.Current.Properties["id_pizzeria"].ToString() + " ORDER BY 2;",
                                                                 conn);
             DataSet ds2 = new DataSet();
             pgDataAdapter2.Fill(ds2);

@@ -32,7 +32,7 @@ namespace Baza_pizzerii
             NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
 
             NpgsqlDataAdapter pgDataAdapter1 = new NpgsqlDataAdapter();
-            pgDataAdapter1.SelectCommand = new NpgsqlCommand("SELECT id_produkt, nazwa FROM inny_produkt WHERE rodzaj = 'danie';", conn);
+            pgDataAdapter1.SelectCommand = new NpgsqlCommand("SELECT id_produkt, nazwa FROM inny_produkt WHERE rodzaj = 'danie' ORDER BY 2;", conn);
             DataSet ds1 = new DataSet();
             pgDataAdapter1.Fill(ds1);
             allOtherDshes.DataContext = ds1.Tables[0].DefaultView;
@@ -40,7 +40,7 @@ namespace Baza_pizzerii
 
             NpgsqlDataAdapter pgDataAdapter2 = new NpgsqlDataAdapter();
             pgDataAdapter2.SelectCommand = new NpgsqlCommand("SELECT id_oferta_inny_produkt, nazwa, cena FROM oferta_inny_produkt JOIN inny_produkt USING (id_produkt)" +
-                                                                " WHERE rodzaj = 'danie' AND id_pizzeria = " + App.Current.Properties["id_pizzeria"].ToString(),
+                                                                " WHERE rodzaj = 'danie' AND id_pizzeria = " + App.Current.Properties["id_pizzeria"].ToString() + " ORDER BY 2;",
                                                                 conn);
             DataSet ds2 = new DataSet();
             pgDataAdapter2.Fill(ds2);
