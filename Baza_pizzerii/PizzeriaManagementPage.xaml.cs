@@ -25,7 +25,19 @@ namespace Baza_pizzerii
         public PizzeriaManagementPage()
         {
             InitializeComponent();
-            InitializeData(); 
+            InitializeData();
+            GridView gridview = (GridView)((ListView)this.Pizzerie).View;
+            hideColumn(gridview.Columns[0]);
+
+        }
+       
+        protected void hideColumn(GridViewColumn column) {
+            column.Width = 0;
+            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
+                if (e.PropertyName == "ActualWidth") {
+                    column.Width = 0;
+                }
+            };
         }
 
         private void InitializeData() 

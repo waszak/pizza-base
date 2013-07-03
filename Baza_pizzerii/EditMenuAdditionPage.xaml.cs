@@ -25,6 +25,10 @@ namespace Baza_pizzerii
         {
             InitializeComponent();
             InitializeData();
+            GridView gridview = (GridView)((ListView)this.allAdditions).View;
+            hideColumn(gridview.Columns[0]);
+            gridview = (GridView)((ListView)this.myAdditions).View;
+            hideColumn(gridview.Columns[0]);
         }
 
         private void InitializeData()

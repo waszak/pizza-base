@@ -55,5 +55,14 @@ namespace Baza_pizzerii {
             this.NavigationService.Navigate(new PizzeriaManagementPage());
         }
 
+        protected void hideColumn(GridViewColumn column) {
+            column.Width = 0;
+            ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
+                if (e.PropertyName == "ActualWidth") {
+                    column.Width = 0;
+                }
+            };
+        }
+
     }
 }
