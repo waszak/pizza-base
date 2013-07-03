@@ -27,4 +27,3 @@ INSERT INTO skladnik (nazwa) VALUES
 	('mieszanka sombrero'),
 	('jajko'),
 	('ananas');
-	

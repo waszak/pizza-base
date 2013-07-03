@@ -567,6 +567,7 @@ GRANT SELECT, USAGE	 ON pizzeria_id_pizzeria_seq TO wlasciciel_pizzerii;
 GRANT SELECT, USAGE	 ON oferta_inny_produkt_id_oferta_inny_produkt_seq TO wlasciciel_pizzerii;
 GRANT SELECT, USAGE	 ON oferta_pizza_id_oferta_pizza_seq TO wlasciciel_pizzerii;
 GRANT SELECT, USAGE	 ON pizza_id_pizza_seq TO wlasciciel_pizzerii;
+GRANT SELECT, USAGE	 ON inny_produkt_id_produkt_seq TO wlasciciel_pizzerii;
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

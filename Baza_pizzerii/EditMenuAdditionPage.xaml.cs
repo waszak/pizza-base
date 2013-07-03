@@ -175,5 +175,30 @@ namespace Baza_pizzerii
             }
         }
 
+        private void NewProduct_Click(object sender, RoutedEventArgs e)
+        {
+            if (NewProduct_tb.Text.Length == 0)
+            {
+                MessageBox.Show("Nie określiłeś nazwy nowego produktu!");
+                return;
+            }
+            string msg;
+            if (! Validate.OnlyLetters(NewProduct_tb.Text,"", out msg))
+            {
+                MessageBox.Show("Niepoprawna nazwa nowego produktu!");
+                return;
+            }
+            
+            NpgsqlConnection conn = DB.loginUserToDB(App.Current.Properties["login"].ToString(), App.Current.Properties["password"].ToString());
+            string sql = "INSERT INTO inny_produkt (nazwa, rodzaj) VALUES ('"+ NewProduct_tb.Text +"', 'dodatek');";
+
+            NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+            command.ExecuteNonQuery();
+            conn.Close();
+
+            this.NavigationService.RemoveBackEntry();
+            this.NavigationService.Navigate(new EditMenuAdditionPage());
+        }
+
     }
 }

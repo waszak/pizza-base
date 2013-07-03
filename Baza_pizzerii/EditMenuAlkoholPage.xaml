@@ -62,6 +62,8 @@
         <Label Content="Cena [zł]:" Canvas.Left="634" Canvas.Top="302" Foreground="Black" Background="White" FontWeight="ExtraBold" Width="89"  />
         <TextBox Name="Price_tb"  Height="26" Canvas.Left="723" TextWrapping="Wrap" Canvas.Top="302" Width="50" MaxLength="6"/>
 
-
+        <Button Content="Zarejestruj nowy alkohol" Canvas.Left="634" Canvas.Top="527" Width="139" Click="NewProduct_Click" />
+        <TextBox Name="NewProduct_tb"  Height="26" Canvas.Left="634" TextWrapping="Wrap" Canvas.Top="496" Width="139" MaxLength="100"/>
+        
     </Canvas>
 </Page>
