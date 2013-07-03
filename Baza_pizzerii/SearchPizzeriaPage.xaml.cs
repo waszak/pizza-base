@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Data;
 using System.ComponentModel;
 using System.Globalization;
+using System.Collections.ObjectModel;
 
 namespace Baza_pizzerii {
     /// <summary>
@@ -24,16 +25,20 @@ namespace Baza_pizzerii {
             InitializeComponent();
             IntializeCity();
             GridView gridview = (GridView)((ListView)this.Pizzeria_listView).View;
-            GridViewColumn column = gridview.Columns[0];
+            hideColumn(gridview.Columns[0]);
+
+            
+        }
+        private void hideColumn(GridViewColumn column) {
+            column.Width = 0;
             ((System.ComponentModel.INotifyPropertyChanged)column).PropertyChanged += (sender, e) => {
                 if (e.PropertyName == "ActualWidth") {
                     column.Width = 0;
                 }
             };
-            
         }
-
         private void IntializeCity() {
+            ObservableCollection<City> cities = new ObservableCollection<City>();
             using (Npgsql.NpgsqlConnection conn = DB.loginAppUserToDB()) {
                 string sql = "SELECT DISTINCT miasto" +
                                     " FROM pizzeria order by 1;";
@@ -43,9 +48,10 @@ namespace Baza_pizzerii {
                 while (reader.Read()) {
                     City p = new City();
                     p.name = reader.GetString(0);
-                    this.City_comboBox.Items.Add(p);
+                    cities.Add(p);
                 }
             }
+            this.City_comboBox.ItemsSource = cities;
         }
         private void myAccount_Click(object sender, RoutedEventArgs e)
         {
